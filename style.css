@@ -1,0 +1,21 @@
+QLabel.label1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #dc2626;
+    letter-spacing: -0.3px;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+QLabel.label2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1e293b;
+    letter-spacing: -0.3px;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+QLabel.label3 {
+    color: #5b6e8c;
+    margin-top: -3px;
+    font-size: 0.9rem;
+}
