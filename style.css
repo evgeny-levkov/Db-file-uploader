@@ -19,3 +19,41 @@ QLabel.label3 {
     margin-top: -3px;
     font-size: 0.9rem;
 }
+
+QLabel.label4 {
+    color: #000000;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+QLabel.label5 {
+    color: #000000;
+    margin-top: 30px;
+    font-size: 20px;       
+    font-weight: 600;      
+}
+
+QLineEdit {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    background-color: white;
+    color: #1e293b;
+}
+
+QLineEdit:focus {
+    border-color: #dc2626;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+}
+
+QLabel.input-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #5b6e8c;
+    letter-spacing: 0.3px;
+    margin-bottom: 4px;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}

@@ -1,6 +1,6 @@
 from db_connect import Dbconnect
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QVBoxLayout, QHBoxLayout, QLabel
+from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QStackedWidget
 import sys
 import os
 
@@ -8,8 +8,11 @@ import os
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
+        # self.stacked_widget = QStackedWidget()
         self.connectionScreen = QWidget()
-        self.operationScreen = QWidget() 
+        # self.operationScreen = QWidget() 
+        #self.stacked_widget.addWidget(self.connectionScreen)
+        #self.stacked_widget.addWidget(self.operationScreen)
         self.initializeUI()
 
 
@@ -26,8 +29,9 @@ class MainWindow(QWidget):
         palette.setColor(self.backgroundRole(), Qt.GlobalColor.white)
         self.setPalette(palette)
 
+        #Верхние надписи
         mainLayout = QVBoxLayout()
-        layout = QHBoxLayout()
+        upperLayout = QHBoxLayout()
 
         self.label1 = QLabel("🚇 Финансовые сверки")
         self.label1.setProperty("class", "label1")
@@ -38,63 +42,51 @@ class MainWindow(QWidget):
         self.label3 = QLabel("Загрузка данных, ETL-обработка, формирование отчётов и аналитика")
         self.label3.setProperty("class", "label3")
 
-        layout.setSpacing(5)
-        layout.addWidget(self.label1)
-        layout.addWidget(self.label2)
-        layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        upperLayout.setSpacing(5)
+        upperLayout.addWidget(self.label1)
+        upperLayout.addWidget(self.label2)
+        upperLayout.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
-        mainLayout.addLayout(layout)
-        mainLayout.addWidget(self.label3)
-        mainLayout.addStretch()
-        self.setLayout(mainLayout)
+        mainLayout.addLayout(upperLayout)
+        mainLayout.addWidget(self.label3) 
 
-        # #кнопка подключения к БД
-        # self.connect_to_db_button = QPushButton('Подключение к БД')
-        # self.connect_to_db_button.clicked.connect(self.check_and_connect_db)
-        # layout.addWidget(self.connect_to_db_button)
+        # Поля для ввода подключения
 
-        # #кнопка вставки данных
-        # self.insert_data_button = QPushButton('Вставка данных')
-        # self.insert_data_button.clicked.connect(self.insert_data)
-        # self.insert_data_button.setVisible(False)
-        # layout.addWidget(self.insert_data_button)
+        mainlowerLoyout = QVBoxLayout()
+        lowerLoyout1 = QHBoxLayout()
+        lowerLoyout2 = QHBoxLayout()
+
+        self.params = QLabel("🔌 Параметры подключения к PostgreSQL")
+        self.params.setProperty("class", "label5")
+        mainlowerLoyout.addWidget(self.params)
+
+        self.host = QLabel("Хост / сервер")
+        self.host.setProperty("class", "label4")
+        self.field_host = QLineEdit()
+        lowerLoyout1.addWidget(self.host)
+        lowerLoyout2.addWidget(self.field_host)
+
+        self.port = QLabel("Порт")
+        self.port.setProperty("class", "label4")
+        self.field_port = QLineEdit()
+        self.field_host.setProperty("class", "QLineEdit")
+        lowerLoyout1.addWidget(self.port)
+        lowerLoyout2.addWidget(self.field_port)  
+
+        # self.connectionButton = QPushButton("скрин 2") 
+        # self.connectionButton.clicked.connect(self.go_to_operationScreen)
         
-        # layout.addStretch()
-        # self.setLayout(layout)
+        mainlowerLoyout.addLayout(lowerLoyout1)
+        mainlowerLoyout.addLayout(lowerLoyout2)      
+        mainLayout.addLayout(mainlowerLoyout)
+        #mainLayout.addWidget(self.connectionButton)
+        mainLayout.addStretch()
+        self.connectionScreen.setLayout(mainLayout)
+        # self.stacked_widget.setCurrentWidget(self.connectionScreen)
 
-
-    # def check_and_connect_db(self):
-    #     self.db_connection = Dbconnect()
-    #     if self.db_connection.test_connection() is True:
-    #         QMessageBox.information(self, "Успех" ,"Подключение к БД успешно установлено!")
-    #         self.connect_to_db_button.setEnabled(False)
-    #         self.insert_data_button.setVisible(True)
-
-    #     else:
-    #         QMessageBox.critical(self, "Ошибка", "Ошибка подключения к БД")
-    #         self.db_connection = None
-
-
-    # def insert_data(self):
-    #     if self.db_connection is None:
-    #         QMessageBox.critical(self, "Ошибка",  "Нет подключения к БД")
-    #         return
-
-    #     try:
-    #         succes = self.db_connection.alter_table()
-    #         if succes is True:
-    #             QMessageBox.information(self, "Успех", "Вставка прошла успешно")
-
-    #         else:
-    #             QMessageBox.critical(self, "Ошибка", "Ошибка при вставке данных!")
-
-    #     except Exception as e:
-    #         QMessageBox.critical(self, "Ошибка", f"Ошибка: {e}")         
-
-    # def closeEvent(self, event):
-    #     if self.db_connection:
-    #         self.db_connection.close_connect()
-    #     event.accept()
+        windowLayout = QVBoxLayout()
+        windowLayout.addWidget(self.connectionScreen)
+        self.setLayout(windowLayout)
 
     @staticmethod
     def load_stylesheet(path):
@@ -113,9 +105,9 @@ if __name__ == "__main__":
     stylesheet = MainWindow.load_stylesheet("style.css")
     if stylesheet:
         app.setStyleSheet(stylesheet)
-        print("✅ Стили загружены")
+        print("✅")
     else:
-        print("⚠️ Файл style.css не найден")
+        print("⚠️")
     
     window = MainWindow()
     sys.exit(app.exec())
