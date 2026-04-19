@@ -2,8 +2,13 @@ import sqlalchemy
 from hander import Hander
 
 class Dbconnect():
-    def __init__(self):
-        self.engine = sqlalchemy.create_engine("postgresql://admin:admin_password@localhost:5432/superset")
+    def __init__(self, user, password, host, port, db_name):
+        self.user = user
+        self.password = password
+        self.host = host
+        self.port = port
+        self.db_name = db_name
+        self.engine = sqlalchemy.create_engine(f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.db_name}")
 
     def test_connection(self):
         try:

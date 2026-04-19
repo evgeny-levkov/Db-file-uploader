@@ -3,7 +3,7 @@ QLabel.label1 {
     font-weight: 600;
     color: #dc2626;
     letter-spacing: -0.3px;
-    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    font-family: 'Arial', Roboto, 'Helvetica Neue', sans-serif;
 }
 
 QLabel.label2 {
@@ -11,7 +11,7 @@ QLabel.label2 {
     font-weight: 600;
     color: #1e293b;
     letter-spacing: -0.3px;
-    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    font-family: 'Arial', Roboto, 'Helvetica Neue', sans-serif;
 }
 
 QLabel.label3 {
@@ -38,7 +38,7 @@ QLineEdit {
     border-radius: 8px;
     padding: 10px 12px;
     font-size: 14px;
-    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    font-family: 'Arial', Roboto, 'Helvetica Neue', sans-serif;
     background-color: white;
     color: #1e293b;
 }
@@ -55,5 +55,27 @@ QLabel.input-label {
     color: #5b6e8c;
     letter-spacing: 0.3px;
     margin-bottom: 4px;
-    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    font-family: 'Arial', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+QPushButton {
+    background-color: #dc2626;
+    color: white;
+    border: 1px solid #dc2626;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Arial', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+QPushButton:pressed {
+    background-color: #b91c1c;
+    border-color: #b91c1c;
+}
+
+QPushButton:disabled {
+    background-color: #fca5a5;
+    border-color: #fca5a5;
+    color: #fef2f2;
 }
