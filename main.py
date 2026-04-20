@@ -1,4 +1,5 @@
 import sys
+sys.dont_write_bytecode = True
 from Ui.app import MainWindow
 from PyQt6.QtWidgets import QApplication
 
@@ -14,5 +15,3 @@ if __name__ == "__main__":
     
     window = MainWindow()
     sys.exit(app.exec())
-
-sys.dont_write_bytecode = True
