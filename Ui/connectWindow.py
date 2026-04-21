@@ -88,8 +88,9 @@ class ConnectionScreen(QWidget):
         btn_layout.setContentsMargins(0, 0, 0, 0)
         self.connect_button.setSizePolicy(
         QSizePolicy.Policy.Expanding,
-        QSizePolicy.Policy.Fixed
-        )
+        QSizePolicy.Policy.Fixed)
+        
+        self.connect_button.setMinimumWidth(500)
 
         btn_layout.addStretch()
         btn_layout.addWidget(self.connect_button)
