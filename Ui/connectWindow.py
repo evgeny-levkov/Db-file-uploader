@@ -47,7 +47,7 @@ class ConnectionScreen(QWidget):
         self.field_port = QLineEdit()
         self.field_port.setProperty("class", "QLineEdit")
 
-        self.name_db = QLabel("Имя базы днных")
+        self.name_db = QLabel("Имя базы данных")
         self.name_db.setProperty("class", "label4")
         self.field_name_db = QLineEdit()
         self.field_name_db.setProperty("class", "QLineEdit")

@@ -7,11 +7,13 @@ class Dbconnect():
         f"postgresql://{config['user']}:{config['password']}"
         f"@{config['host']}:{config['port']}/{config['db_name']}"
         )
+        self.connection = None
 
     def test_connection(self):
         try:
             with self.engine.connect() as conn:
                 conn.execute(sqlalchemy.text("SELECT 1"))
+                self.connection = conn
             return True
         except Exception as e:
             print(f"Ошибка подключения: {e}")
