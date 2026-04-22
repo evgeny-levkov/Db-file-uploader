@@ -1,4 +1,3 @@
-from Service.db_service import DbService
 from PyQt6.QtCore import Qt
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QGridLayout, QSizePolicy
