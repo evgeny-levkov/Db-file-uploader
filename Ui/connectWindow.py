@@ -33,7 +33,8 @@ class ConnectionScreen(QWidget):
         upperLayout.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
         mainLayout.addLayout(upperLayout)
-        mainLayout.addWidget(self.label3) 
+        mainLayout.addWidget(self.label3)
+        mainLayout.addSpacing(10) 
 
         self.main_lower_box = QHBoxLayout()
         self.row = QGridLayout()
