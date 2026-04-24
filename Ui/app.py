@@ -49,7 +49,6 @@ class MainWindow(QWidget):
             service = DbService(config)
             if service.test_connection():
                 self.stacked_widget.setCurrentIndex(1)
-                QMessageBox.information(self, "Успех", "Подключение к БД прошло успешно")
             else:
                 QMessageBox.critical(self, "Ошибка", "Ошибка подключения к БД")
         except:
