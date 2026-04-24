@@ -131,8 +131,8 @@ class ConnectionScreen(QWidget):
     def set_visible_password(self):
         if self.field_password.echoMode() == QLineEdit.EchoMode.Password:
             self.field_password.setEchoMode(QLineEdit.EchoMode.Normal)
-            self.action.setIcon(self.close_eye)
+            self.action.setIcon(self.open_eye)
         else:
             self.field_password.setEchoMode(QLineEdit.EchoMode.Password)
-            self.action.setIcon(self.open_eye) 
+            self.action.setIcon(self.close_eye) 
 
