@@ -1,6 +1,7 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QGridLayout, QSizePolicy
+from PyQt6.QtGui import QIcon, QAction
 
 class ConnectionScreen(QWidget):
 
@@ -9,6 +10,7 @@ class ConnectionScreen(QWidget):
     def __init__(self):
         super().__init__()
         self.initlUi()
+
 
     def initlUi(self):
         
@@ -56,11 +58,16 @@ class ConnectionScreen(QWidget):
         self.field_user = QLineEdit()
         self.field_user.setProperty("class", "QLineEdit")
 
+        self.close_eye = QIcon("image/close_eye.png")
+        self.open_eye = QIcon("image/open_eye.png")
+
         self.password = QLabel("Пароль")
         self.password.setProperty("class", "label4")
         self.field_password = QLineEdit()
         self.field_password.setProperty("class", "QLineEdit")
         self.field_password.setEchoMode(QLineEdit.EchoMode.Password)
+        self.action = self.field_password.addAction(self.close_eye, QLineEdit.ActionPosition.TrailingPosition)
+        self.action.triggered.connect(self.set_visible_password)
 
         self.connect_button = QPushButton("Проверить подключение")
         self.connect_button.setProperty("class", "QPushButton")
@@ -120,3 +127,11 @@ class ConnectionScreen(QWidget):
 
         self.success.emit(config)
         
+    def set_visible_password(self):
+        if self.field_password.echoMode() == QLineEdit.EchoMode.Password:
+            self.field_password.setEchoMode(QLineEdit.EchoMode.Normal)
+            self.action.setIcon(self.close_eye)
+        else:
+            self.field_password.setEchoMode(QLineEdit.EchoMode.Password)
+            self.action.setIcon(self.open_eye) 
+
