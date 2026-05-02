@@ -2,3 +2,4 @@ data
 __pycache__
 schema.png
 .vscode
+.DS_Store
