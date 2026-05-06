@@ -5,6 +5,7 @@ import pandas as pd
 class OperationScreen(QWidget):
 
     escape = pyqtSignal()
+    load = pyqtSignal(tuple)
 
     def __init__(self):
         super().__init__()
@@ -30,12 +31,13 @@ class OperationScreen(QWidget):
         self.form_report_button.clicked.connect(self.show_form_report)
         self.button_loyout.addWidget(self.load_data_button)
         self.button_loyout.addWidget(self.form_report_button)
-
+        
+        #Загрузка файлов и операций
         self.load_data_loyuot = QVBoxLayout()
         self.form_report_loyout = QVBoxLayout()
 
         self.label1 = QLabel("📎 Загрузка файлов операций")
-        self.label1.setProperty("class", "label4")
+        self.label1.setProperty("class", "label6")
 
         self.label2 = QLabel("Выберите тип продукта и приложите XLSX-файл (соответствует Приложению 2 – модель данных)")
         self.label2.setWordWrap(False)
@@ -45,10 +47,19 @@ class OperationScreen(QWidget):
         self.label3.setProperty("class", "label4")
 
         self.list1 = QComboBox()
-        self.list1.addItem("Банковские карты (bank_cards.xlsx)")
-        self.list1.addItem("Виртуальная тройка (virtual_troika.xlsx)")
-        self.list1.addItem("Мультитранспорт (multitransport.xlsx)")
-        self.list1.addItem("Продажи.xlsx")
+        self.list1.addItem("bill_bbk")
+        self.list1.addItem("bill_maas_mgt")
+        self.list1.addItem("bill_maas_mm")
+        self.list1.addItem("bill_maas_ppk")
+        self.list1.addItem("bill_vt")
+        self.list1.addItem("prosmotr_prohodov_maas_mgt")
+        self.list1.addItem("prosmotr_prohodov_maas_mm")
+        self.list1.addItem("prosmotr_prohodov_maas_ppk")
+        self.list1.addItem("prosmotr_prohodov_vt")
+        self.list1.addItem("reestr_prodaj_maas")
+        self.list1.addItem("reestr_prodaj_vt")
+        self.list1.addItem("sessii_prodaj_maas")
+        self.list1.addItem("sessii_prodaj_vt")
         self.list1.setProperty("class", "QComboBox")
         self.list1.setCurrentIndex(0)
         self.list1.update()
@@ -59,6 +70,8 @@ class OperationScreen(QWidget):
         self.open_file_loyuot = QHBoxLayout()
         self.open_file_button = QPushButton("Открыть файл")
         self.open_file_button.clicked.connect(self.open_file)
+        self.upload_button = QPushButton("Загрузить")
+        self.upload_button.clicked.connect(self.upload_db)
         self.file_name = QLabel("Файл не выбран")
         self.file_name.setProperty("class", "label4")
         self.open_file_loyuot.addWidget(self.open_file_button)
@@ -70,11 +83,15 @@ class OperationScreen(QWidget):
         self.load_data_loyuot.addWidget(self.list1)
         self.load_data_loyuot.addWidget(self.label4)
         self.load_data_loyuot.addLayout(self.open_file_loyuot)
-        self.load_data_loyuot.addStretch()
+        self.load_data_loyuot.addWidget(self.upload_button)
+        
+        self.load_data_loyuot.addStretch(0)
 
+        #Сформировать отчёт
         self.label5 = QLabel("📑 Параметры отчёта")
         self.label5.setProperty("class", "label4")
         self.form_report_loyout.addWidget(self.label5)
+
 
         self.load_data.setLayout(self.load_data_loyuot)
         self.form_report.setLayout(self.form_report_loyout)
@@ -86,7 +103,6 @@ class OperationScreen(QWidget):
         self.main_loyuot.addWidget(self.stacked_widget)
         self.main_loyuot.addWidget(self.esc_button)
         self.main_loyuot.addStretch()
-
         self.setLayout(self.main_loyuot)
 
         
@@ -102,10 +118,16 @@ class OperationScreen(QWidget):
         file_path, _ = QFileDialog.getOpenFileName(self, "Выберите XLSX файл", "", "Excel (*.xlsx)")
 
         if file_path:
-            self.file = pd.read_excel(file_path)
-            self.file_name.setText(file_path.split("/")[-1])
+            try:
+                self.file = pd.read_excel(file_path)
+                self.file_name.setText(file_path.split("/")[-1])
 
-        # вот тут по идее нужен emit с file а в app вызывать service в котором вызывать db_connect
+            except:
+                self.file_name.setText("Ошибка при чтении файла")
+       
+
+    def upload_db(self):
+        self.load.emit((self.file, self.list1.currentText()))
 
 
     def go_to_screen1(self):

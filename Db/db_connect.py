@@ -1,5 +1,6 @@
 import sqlalchemy
 from hander import Hander
+import pandas as pd
 
 class Dbconnect():
     def __init__(self, config):
@@ -8,6 +9,7 @@ class Dbconnect():
         f"@{config['host']}:{config['port']}/{config['db_name']}"
         )
         self.connection = None
+
 
     def test_connection(self):
         try:
@@ -19,17 +21,20 @@ class Dbconnect():
             print(f"Ошибка подключения: {e}")
             return False
 
-    # def alter_table(self):
-    #     hander = Hander()
-    #     self.data_passanges_bbk_maas = hander.hander_errors()
-    #     try:
-    #         self.data_passanges_bbk_maas.to_sql('passages_bbk_maas', self.engine, 
-    #                                     if_exists='append', 
-    #                                     index=False)
-    #         return True
-    #     except Exception as e:
-    #         print(f"Ошибка при выполнении запроса: {e}")
-    #         return False
+
+    def load_data(self, table, db_table):
+        if isinstance(table, pd.DataFrame):
+            try:
+                table.columns = table.columns.str.lower()
+                table.to_sql(f'{db_table}', self.engine, if_exists = 'append', index = False)
+                return True
+        
+            except Exception as e:
+                print(f'Ошибка при выполнении запроса: {e}')
+                return False
+        else:
+            return False
+        
 
     def close_connect(self):
         self.engine.dispose()

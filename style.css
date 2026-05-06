@@ -69,13 +69,19 @@ QPushButton:disabled {
 }
 
 QPushButton[class="upload"] {
-    color: white;
+    background-color: #e5e5e5;
+    color: black;
     border: none;
     border-radius: 8px;
     padding: 12px 24px;
     font-size: 14px;
     font-weight: bold;
-    min-width: 250px;  
+    min-width: 500px;
+    height: 150px  
+}
+
+QPushButton[class="upload"]:hover {
+    background-color: #f5a5a5
 }
 
 QComboBox {
@@ -101,4 +107,10 @@ QComboBox QAbstractItemView::item {
 QComboBox QAbstractItemView::item:selected {
     background-color: #f3f4f6;
     color: black;
+}
+
+QLabel.label6 {
+    color: #000000;
+    font-size: 16px;
+    font-weight: 700;
 }
