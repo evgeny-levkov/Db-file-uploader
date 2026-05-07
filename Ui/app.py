@@ -2,7 +2,6 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QStackedWidget, QMessageBox
 from Ui.connectWindow import ConnectionScreen
 from Ui.operationWindow import OperationScreen
-# from Service.db_service import DbService
 from Service.db_service import DbService
 from Service.worker import Worker
 from PyQt6.QtCore import QThread
