@@ -19,6 +19,7 @@ class OperationScreen(QWidget):
 
         self.initlUi()
 
+
     def initlUi(self):
         self.main_loyuot = QVBoxLayout()
         self.button_loyout = QHBoxLayout()

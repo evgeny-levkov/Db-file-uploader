@@ -2,6 +2,7 @@ from .db_service import DbService
 from PyQt6.QtCore import pyqtSignal, QObject
 
 
+
 class dataLoadWorker(QObject):
 
     connect = pyqtSignal(object)

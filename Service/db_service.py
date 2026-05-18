@@ -1,8 +1,9 @@
 from Db.db_connect import Dbconnect
 
 
+
 class DbService:
-    
+
     def __init__(self, db_engine):
         self.db = Dbconnect(db_engine)
 

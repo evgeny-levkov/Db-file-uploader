@@ -3,6 +3,8 @@ from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QGridLayout, QSizePolicy
 from PyQt6.QtGui import QIcon
 
+
+
 class ConnectionScreen(QWidget):
 
     success = pyqtSignal(object)
@@ -74,7 +76,6 @@ class ConnectionScreen(QWidget):
         self.connect_button.setProperty("class", "QPushButton")
         self.connect_button.clicked.connect(self.connect_db)
 
-
         self.row.addWidget(self.host, 0, 0)
         self.row.addWidget(self.field_host, 1, 0)
 
@@ -105,7 +106,6 @@ class ConnectionScreen(QWidget):
 
         self.row.addWidget(btn_container, 6, 0, 2, 3)
         
-
         self.main_lower_box.addLayout(self.row) 
 
         mainLayout.addLayout(self.main_lower_box)
@@ -127,7 +127,8 @@ class ConnectionScreen(QWidget):
         }
 
         self.success.emit(config)
-        
+
+
     def set_visible_password(self):
         if self.field_password.echoMode() == QLineEdit.EchoMode.Password:
             self.field_password.setEchoMode(QLineEdit.EchoMode.Normal)
@@ -135,4 +136,3 @@ class ConnectionScreen(QWidget):
         else:
             self.field_password.setEchoMode(QLineEdit.EchoMode.Password)
             self.action.setIcon(self.close_eye) 
-

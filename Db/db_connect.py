@@ -10,6 +10,7 @@ class Dbconnect():
     def __init__(self, db_engine):
         self.db_engine: Dbengine = db_engine
 
+
     def test_connection(self):
         try:
             with self.db_engine.engine.connect() as connection:
