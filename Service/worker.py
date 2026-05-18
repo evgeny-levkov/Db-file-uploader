@@ -16,6 +16,5 @@ class dataLoadWorker(QObject):
 
 
     def do_work(self):
-        self._service.test_connection()
         self.success = self._service.load_data(self.table, self.db_table)
         self.finished.emit(self.success)
