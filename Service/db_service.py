@@ -3,8 +3,8 @@ from Db.db_connect import Dbconnect
 
 class DbService:
     
-    def __init__(self, config):
-        self.db = Dbconnect(config)
+    def __init__(self, db_engine):
+        self.db = Dbconnect(db_engine)
 
 
     def test_connection(self):

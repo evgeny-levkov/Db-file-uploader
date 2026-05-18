@@ -3,8 +3,9 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QStackedWidget, QMessageBox
 from Ui.connectWindow import ConnectionScreen
 from Ui.operationWindow import OperationScreen
 from Service.db_service import DbService
-from Service.worker import Worker
+from Service.worker import dataLoadWorker
 from PyQt6.QtCore import QThread
+from Db.db_engine import Dbengine
 import os
 
 
@@ -23,9 +24,10 @@ class MainWindow(QWidget):
         self.operationScreen.load.connect(self.handle_load)
         
         self.service = None
-        self.worker = None
+        self.data_load_worker = None
         self.config = None
         self.thread: QThread = None
+        self.db_engine = None
 
         self.initializeUI() 
 
@@ -55,7 +57,8 @@ class MainWindow(QWidget):
         
         try:
             self.config = config
-            self.service = DbService(config)
+            self.db_engine = Dbengine(config)
+            self.service = DbService(self.db_engine)
             if self.service.test_connection():
                 self.stacked_widget.setCurrentIndex(1)
             else:
@@ -70,13 +73,16 @@ class MainWindow(QWidget):
 
     def handle_load(self, data):
         
-        if self.worker is None:
+        if self.data_load_worker is None:
             self.thread = QThread()
-            self.worker = Worker(data[0], data[1], self.config)
-            self.worker.moveToThread(self.thread)
-            self.thread.started.connect(self.worker.do_work)
-            self.thread.start()
-            self.worker.finished.connect(self.finished_work)
+            self.data_load_worker = dataLoadWorker(data[0], data[1], self.db_engine)
+            self.data_load_worker.moveToThread(self.thread)
+            try:
+                self.thread.started.connect(self.data_load_worker.do_work)
+                self.thread.start()
+                self.data_load_worker.finished.connect(self.finished_work)
+            except:
+                QMessageBox.critical(self, "Ошибка" ,"Ошибка при вставке")
         else:
             return False
 
@@ -88,9 +94,8 @@ class MainWindow(QWidget):
             QMessageBox.critical(self, "Ошибка" ,"Ошибка при вставке")
         self.thread.quit()
         self.thread.wait()
-        self.worker = None
+        self.data_load_worker = None
         self.thread = None
-
 
 
     @staticmethod
