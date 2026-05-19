@@ -74,10 +74,10 @@ QPushButton[class="upload"] {
     border: none;
     border-radius: 8px;
     padding: 12px 24px;
-    font-size: 14px;
+    font-size: 17px;
     font-weight: bold;
     min-width: 500px;
-    height: 150px  
+    height: 100px  
 }
 
 QPushButton[class="upload"]:hover {
@@ -113,4 +113,10 @@ QLabel.label6 {
     color: #000000;
     font-size: 16px;
     font-weight: 700;
+}
+
+QLabel.label7 {
+    color: #000000;
+    font-size: 15px;
+    font-weight: 400;
 }

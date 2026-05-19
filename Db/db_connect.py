@@ -67,3 +67,12 @@ class Dbconnect():
                 return False
         else:
             return False
+        
+    
+    # def create_reconciliation_report(self):
+    #     try:
+    #         with self.db_engine.engine.connect() as connection:
+    #             connection.execute
+
+    #     except:
+    #         pass
