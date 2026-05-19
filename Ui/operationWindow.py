@@ -69,20 +69,15 @@ class OperationScreen(QWidget):
         self.label4 = QLabel("Выберите XLSX-файл")
         self.label4.setProperty("class", "label7")
 
-
-        # self.open_file_loyuot = QHBoxLayout()
         self.open_file_button = QPushButton("Выбрать файл")
         self.open_file_button.clicked.connect(self.open_file)
 
         self.upload_button = QPushButton("Загрузить")
         self.upload_button.clicked.connect(self.upload_db)
-        #self.upload_button.setMinimumWidth(10)
 
         self.file_name = QLabel("Файл не выбран")
         self.file_name.setProperty("class", "label7")
 
-        # self.open_file_loyuot.addWidget(self.open_file_button)
-        # self.open_file_loyuot.addWidget(self.file_name)
         self.open_file_loyuot = QGridLayout()
         self.open_file_loyuot.addWidget(self.open_file_button, 0, 0)
         self.open_file_loyuot.addWidget(self.file_name, 0, 1)
@@ -100,10 +95,7 @@ class OperationScreen(QWidget):
         self.upload_button_louout.addWidget(self.upload_button, 2)
         self.upload_button_louout.addWidget(self.null_coll0, 3)
         self.upload_button_louout.addWidget(self.null_coll2, 3)
-
-        # self.open_file_loyuot.addWidget(self.upload_button, 1, 2)
         self.open_file_loyuot.addLayout(self.upload_button_louout, 2, 0, 1, 2)
-
 
         self.load_data_loyuot.addWidget(self.label1)
         self.load_data_loyuot.addWidget(self.label2)
@@ -111,10 +103,9 @@ class OperationScreen(QWidget):
         self.load_data_loyuot.addWidget(self.list1)
         self.load_data_loyuot.addWidget(self.label4)
         self.load_data_loyuot.addLayout(self.open_file_loyuot)
-
-        #self.load_data_loyuot.addWidget(self.upload_button)
         
         self.load_data_loyuot.addStretch(0)
+
 
         #Сформировать отчёт
         self.label5 = QLabel("📑 Параметры отчёта")

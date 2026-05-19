@@ -2,10 +2,13 @@ import sqlalchemy
 from sqlalchemy import text
 import pandas as pd
 from Db.db_engine import Dbengine
+from itertools import batched
 
 
 
 class Dbconnect():
+
+    batch_size = 500000
 
     def __init__(self, db_engine):
         self.db_engine: Dbengine = db_engine
@@ -30,6 +33,11 @@ class Dbconnect():
                     if len(db_column) == 0:
                         print('Таблица не найдена')
                         return False
+                    if db_table not in ['sessii_prodaj_vt', 'sessii_prodaj_maas', 'reestr_prodaj_vt', 'reestr_prodaj_maas']:
+                        if ('datetime_minus_4',) not in db_column:
+                            print('В таблице отсутствует datetime_minus_4')
+                            return False 
+                        
                     if db_table in ['sessii_prodaj_vt', 'sessii_prodaj_maas']:
                         table['Дата и время транзакции'] = pd.to_datetime(table['Дата и время транзакции'])
                         table['day_of_week_new'] = table['Дата и время транзакции'].dt.dayofweek
@@ -50,7 +58,7 @@ class Dbconnect():
                     if len(db_column_new) == len(table.columns):
                         try:
                             table.columns = db_column_new
-                            table.to_sql(f'{db_table}', self.db_engine.engine, if_exists = 'append', index = False)
+                            table.to_sql(f'{db_table}', self.db_engine.engine, if_exists = 'append', index = False, chunksize = 500000)
                             return True
                         
                         except Exception as e:
@@ -65,9 +73,7 @@ class Dbconnect():
             except Exception as e:
                 print(f'Ошибка при выполнении запроса: {e}, table = "{db_table}"')
                 return False
-        else:
-            return False
-        
+    
     
     # def create_reconciliation_report(self):
     #     try:
