@@ -77,11 +77,15 @@ QPushButton[class="upload"] {
     font-size: 17px;
     font-weight: bold;
     min-width: 500px;
-    height: 100px  
+    height: 100px;
 }
 
 QPushButton[class="upload"]:hover {
-    background-color: #f5a5a5
+    background-color: #ffcccc;
+}
+
+QPushButton[class="upload"]:pressed, QPushButton[class="upload"]:checked {
+    background-color: #f5a5a5;
 }
 
 QComboBox {
@@ -119,4 +123,102 @@ QLabel.label7 {
     color: #000000;
     font-size: 15px;
     font-weight: 400;
+}
+
+/* Стиль для поля QDateEdit */
+QDateEdit {
+    background-color: white;
+    color: black;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    padding: 6px 10px;
+    min-width: 120px;
+    font-size: 13px;
+}
+
+/* Стиль для кнопки-календаря */
+QDateEdit::drop-down {
+    background-color: #e0e0e0;
+    border-left: 1px solid #cccccc;
+    border-radius: 0px 4px 4px 0px;
+    width: 24px;
+}
+
+/* Иконка календаря */
+QDateEdit::down-arrow {
+    border-image: url(image/image3.png);
+    width: 16px;
+    height: 16px;
+}
+
+/* Стиль для выпадающего календаря */
+QCalendarWidget {
+    background-color: white;
+    color: black;
+}
+
+/* Корневой виджет календаря */
+QCalendarWidget QWidget#qt_calendar_calendarview {
+    background-color: white;
+}
+
+/* Область с сеткой дат */
+QCalendarWidget QTableView {
+    background-color: white;
+}
+
+/* Сама таблица */
+QCalendarWidget QTableView QWidget {
+    background-color: white;
+}
+
+/* Кнопки переключения месяцев */
+QCalendarWidget QToolButton {
+    background-color: transparent;
+    color: black;
+}
+
+/* Выпадающие меню (месяц/год) */
+QCalendarWidget QMenu {
+    background-color: white;
+    color: black;
+}
+
+/* Спинбокс для выбора года */
+QCalendarWidget QSpinBox {
+    background-color: white;
+    color: black;
+}
+
+/* Таблица с датами */
+QCalendarWidget QAbstractItemView {
+    background-color: white;
+    color: black;
+}
+
+/* Фон ячеек таблицы */
+QCalendarWidget QAbstractItemView::item {
+    background-color: white;
+}
+
+/* Ячейка с датой при наведении */
+QCalendarWidget QAbstractItemView::item:hover {
+    background-color: #ffcccc;
+    border-radius: 12px;
+}
+
+/* Выбранная дата (кружок) */
+QCalendarWidget QAbstractItemView::item:selected {
+    background-color: red;
+    border-radius: 12px;
+    color: white;
+}
+
+QCalendarWidget QWidget#qt_calendar_navigationbar {
+    background-color: white;
+    color: black;
+}
+
+QCalendarWidget QToolButton {
+    color: black;
 }

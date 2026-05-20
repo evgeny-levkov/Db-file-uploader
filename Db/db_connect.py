@@ -8,8 +8,6 @@ from itertools import batched
 
 class Dbconnect():
 
-    batch_size = 500000
-
     def __init__(self, db_engine):
         self.db_engine: Dbengine = db_engine
 
