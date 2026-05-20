@@ -2,7 +2,6 @@ import sqlalchemy
 from sqlalchemy import text
 import pandas as pd
 from Db.db_engine import Dbengine
-from itertools import batched
 
 
 

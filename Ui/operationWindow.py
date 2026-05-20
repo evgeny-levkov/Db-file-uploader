@@ -1,9 +1,10 @@
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel, QHBoxLayout, QStackedWidget, QComboBox, QFileDialog, QGridLayout, QDateEdit
-from PyQt6.QtGui import QPalette, QColor
 from PyQt6.QtCore import QDate
 import pandas as pd
+
+
 
 class OperationScreen(QWidget):
 
@@ -165,12 +166,15 @@ class OperationScreen(QWidget):
         self.do_report_loyout = QHBoxLayout()
         self.null_coll4 = QLabel()
         self.null_coll_6 = QLabel()
+        self.null_widget_1 = QLabel()
+        self.null_widget_1.setMinimumHeight(10)
 
         self.do_report_loyout.addWidget(self.do_report_button, 2)
         self.do_report_loyout.addWidget(self.null_coll4, 3)  
         self.do_report_loyout.addWidget(self.null_coll_6, 3)    
         
-        self.form_report_grid.addLayout(self.do_report_loyout, 4, 0, 1, 2)
+        self.form_report_grid.addWidget(self.null_widget_1, 4, 0)
+        self.form_report_grid.addLayout(self.do_report_loyout, 5, 0, 1, 2)
 
 
         self.form_report_loyout.addWidget(self.label5)
