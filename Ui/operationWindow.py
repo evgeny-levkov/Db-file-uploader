@@ -126,18 +126,21 @@ class OperationScreen(QWidget):
 
         self.label7 = QLabel("Период с")
         self.label7.setProperty("class", "label7")
+
         self.date_from = QDateEdit(QDate.currentDate())
         self.date_from.setCalendarPopup(True)
         self.date_from.setProperty("class", "QDateEdit")
                 
         self.label8 = QLabel("Период по")
         self.label8.setProperty("class", "label7")
+
         self.date_to = QDateEdit(QDate.currentDate())
         self.date_to.setCalendarPopup(True)
         self.date_to.setProperty("class", "QDateEdit")
 
         self.label9 = QLabel("Формат отчёта")
         self.label9.setProperty("class", "label7")
+
         self.list_formats = QComboBox()
         self.list_formats.setProperty("class", "QComboBox")
         self.list_formats.addItem("Word")
@@ -145,8 +148,8 @@ class OperationScreen(QWidget):
         self.do_report_button = QPushButton("Сформировать отчёт")
         self.do_report_button.clicked.connect(self.do_report)
 
-
         self.form_report_grid = QGridLayout()
+
         self.form_report_grid.addWidget(self.label6, 0, 0)
         self.form_report_grid.addWidget(self.label7, 0, 1)
 
@@ -162,6 +165,7 @@ class OperationScreen(QWidget):
         self.do_report_loyout = QHBoxLayout()
         self.null_coll4 = QLabel()
         self.null_coll_6 = QLabel()
+
         self.do_report_loyout.addWidget(self.do_report_button, 2)
         self.do_report_loyout.addWidget(self.null_coll4, 3)  
         self.do_report_loyout.addWidget(self.null_coll_6, 3)    
@@ -176,6 +180,7 @@ class OperationScreen(QWidget):
 
         self.load_data.setLayout(self.load_data_loyuot)
         self.form_report.setLayout(self.form_report_loyout)
+
 
         self.esc_button = QPushButton("Назад")
         self.esc_button.clicked.connect(self.go_to_screen1)
@@ -197,6 +202,7 @@ class OperationScreen(QWidget):
         self.stacked_widget.setCurrentIndex(1)
         self.load_data_button.setChecked(False)
         self.form_report_button.setChecked(True)
+
 
     def open_file(self):
         file_path, _ = QFileDialog.getOpenFileName(self, "Выберите XLSX файл", "", "Excel (*.xlsx)")
