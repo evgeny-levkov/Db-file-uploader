@@ -34,22 +34,25 @@ class Dbconnect():
                         if ('datetime_minus_4',) not in db_column:
                             print('В таблице отсутствует datetime_minus_4')
                             return False 
-                        
-                    if db_table in ['sessii_prodaj_vt', 'sessii_prodaj_maas']:
-                        table['Дата и время транзакции'] = pd.to_datetime(table['Дата и время транзакции'])
-                        table['day_of_week_new'] = table['Дата и время транзакции'].dt.dayofweek
-                        table['hour_new'] = table['Дата и время транзакции'].dt.hour
+                    try:
+                        if db_table in ['sessii_prodaj_vt', 'sessii_prodaj_maas']:
+                            table['Дата и время транзакции'] = pd.to_datetime(table['Дата и время транзакции'])
+                            table['day_of_week_new'] = table['Дата и время транзакции'].dt.dayofweek
+                            table['hour_new'] = table['Дата и время транзакции'].dt.hour
 
-                    elif db_table in ['reestr_prodaj_vt', 'reestr_prodaj_maas']:
-                        table['transporttime'] = pd.to_datetime(table['Дата и время транзакции'])
-                        table['day_of_week_new'] = table['transporttime'].dt.dayofweek
-                        table['hour_new'] = table['Дата и время транзакции'].dt.hour
+                        elif db_table in ['reestr_prodaj_vt', 'reestr_prodaj_maas']:
+                            table['TransportTime'] = pd.to_datetime(table['TransportTime'])
+                            table['day_of_week_new'] = table['TransportTime'].dt.dayofweek
+                            table['hour_new'] = table['TransportTime'].dt.hour
 
-                    else:
-                        table['Дата и время транзакции'] = pd.to_datetime(table['Дата и время транзакции'])
-                        table['datetime_minus_4'] = table['Дата и время транзакции'] - pd.Timedelta(hours=4)
-                        table['hour_new'] = table['datetime_minus_4'].dt.hour
-                        table['day_of_week_new'] = table['datetime_minus_4'].dt.dayofweek
+                        else:
+                            table['Дата и время транзакции'] = pd.to_datetime(table['Дата и время транзакции'])
+                            table['datetime_minus_4'] = table['Дата и время транзакции'] - pd.Timedelta(hours=4)
+                            table['hour_new'] = table['datetime_minus_4'].dt.hour
+                            table['day_of_week_new'] = table['datetime_minus_4'].dt.dayofweek
+                    except:
+                        print('Невозможно преобразовать исходные данные')
+                        return False
 
                     db_column_new = [item[0] for item in db_column]
                     if len(db_column_new) == len(table.columns):
