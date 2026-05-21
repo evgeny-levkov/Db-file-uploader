@@ -10,6 +10,7 @@ class OperationScreen(QWidget):
 
     escape = pyqtSignal()
     load = pyqtSignal(tuple)
+    do_report = pyqtSignal(tuple)
 
     def __init__(self):
         super().__init__()
@@ -21,10 +22,10 @@ class OperationScreen(QWidget):
         self.stacked_widget.addWidget(self.load_data)
         self.stacked_widget.addWidget(self.form_report)
 
-        self.initlUi()
+        self.InitlUi()
 
 
-    def initlUi(self):
+    def InitlUi(self):
         self.main_loyuot = QVBoxLayout()
         self.button_loyout = QHBoxLayout()
 
@@ -32,8 +33,8 @@ class OperationScreen(QWidget):
         self.load_data_button.setProperty("class", "upload")
         self.form_report_button = QPushButton("Сформировать отчёт\nАналитика, прогнозы, экспорты PDF, CSV, PNG")
         self.form_report_button.setProperty("class", "upload")
-        self.load_data_button.clicked.connect(self.show_load_data)
-        self.form_report_button.clicked.connect(self.show_form_report)
+        self.load_data_button.clicked.connect(self.ShowLoadData)
+        self.form_report_button.clicked.connect(self.ShowFormReport)
         self.load_data_button.setCheckable(True)
         self.form_report_button.setCheckable(True)
         self.button_loyout.addWidget(self.load_data_button)
@@ -75,10 +76,10 @@ class OperationScreen(QWidget):
         self.label4.setProperty("class", "label7")
 
         self.open_file_button = QPushButton("Выбрать файл")
-        self.open_file_button.clicked.connect(self.open_file)
+        self.open_file_button.clicked.connect(self.OpenFile)
 
         self.upload_button = QPushButton("Загрузить")
-        self.upload_button.clicked.connect(self.upload_db)
+        self.upload_button.clicked.connect(self.UploadDb)
 
         self.file_name = QLabel("Файл не выбран")
         self.file_name.setProperty("class", "label7")
@@ -122,8 +123,9 @@ class OperationScreen(QWidget):
         self.list_bank_propucts = QComboBox()
         self.list_bank_propucts.setProperty("class", "QComboBox")
         self.list_bank_propucts.addItem("Банковские карты")
-        self.list_bank_propucts.addItem("Вт")
-        self.list_bank_propucts.addItem("Потом доделаю список чёт пока я хз")
+        self.list_bank_propucts.addItem("Маас ММ")
+        self.list_bank_propucts.addItem("Маас НГПТ")
+        self.list_bank_propucts.addItem("ММаас ППК")
 
         self.label7 = QLabel("Период с")
         self.label7.setProperty("class", "label7")
@@ -147,7 +149,7 @@ class OperationScreen(QWidget):
         self.list_formats.addItem("Word")
 
         self.do_report_button = QPushButton("Сформировать отчёт")
-        self.do_report_button.clicked.connect(self.do_report)
+        self.do_report_button.clicked.connect(self.DoReport)
 
         self.form_report_grid = QGridLayout()
 
@@ -187,7 +189,7 @@ class OperationScreen(QWidget):
 
 
         self.esc_button = QPushButton("Назад")
-        self.esc_button.clicked.connect(self.go_to_screen1)
+        self.esc_button.clicked.connect(self.GoToScreen1)
 
         self.main_loyuot.addLayout(self.button_loyout)
         self.main_loyuot.addWidget(self.stacked_widget)
@@ -196,19 +198,19 @@ class OperationScreen(QWidget):
         self.setLayout(self.main_loyuot)
 
         
-    def show_load_data(self):
+    def ShowLoadData(self):
         self.stacked_widget.setCurrentIndex(0)
         self.load_data_button.setChecked(True)
         self.form_report_button.setChecked(False)
 
 
-    def show_form_report(self):
+    def ShowFormReport(self):
         self.stacked_widget.setCurrentIndex(1)
         self.load_data_button.setChecked(False)
         self.form_report_button.setChecked(True)
 
 
-    def open_file(self):
+    def OpenFile(self):
         file_path, _ = QFileDialog.getOpenFileName(self, "Выберите XLSX файл", "", "Excel (*.xlsx)")
 
         if file_path:
@@ -221,14 +223,14 @@ class OperationScreen(QWidget):
                 self.file = None
        
 
-    def upload_db(self):
+    def UploadDb(self):
         if self.file is not None:
             self.load.emit((self.file, self.list_tables.currentText()))
 
 
-    def go_to_screen1(self):
+    def GoToScreen1(self):
         self.escape.emit()
 
 
-    def do_report(self):
-        pass
+    def DoReport(self):
+        self.do_report.emit((self.date_from, self.date_to, self.list_bank_propucts.currentText()))

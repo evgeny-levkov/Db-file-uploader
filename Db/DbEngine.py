@@ -1,6 +1,8 @@
 import sqlalchemy
 
-class Dbengine():
+
+
+class DbEngine():
 
     def __init__(self, config):
         self.engine = sqlalchemy.create_engine(

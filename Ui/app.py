@@ -1,12 +1,15 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QStackedWidget, QMessageBox
-from Ui.connectWindow import ConnectionScreen
-from Ui.operationWindow import OperationScreen
-from Service.db_service import DbService
-from Service.worker import dataLoadWorker
+from PyQt6.QtWidgets import QFileDialog
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QStackedWidget, QMessageBox, QDateEdit
+from Ui.ConnectWindow import ConnectionScreen
+from Ui.OperationWindow import OperationScreen
+from Service.DbService import DbService
+from Service.DataLoadWorker import DataLoadWorker
+from Service.CreateReportWorker import CreateReportWorker 
 from PyQt6.QtCore import QThread
-from Db.db_engine import Dbengine
+from Db.DbEngine import DbEngine
 import os
+import shutil
 
 
 
@@ -21,20 +24,23 @@ class MainWindow(QWidget):
         self.stacked_widget.addWidget(self.connectionScreen)
         self.stacked_widget.addWidget(self.operationScreen)
 
-        self.connectionScreen.success.connect(self.handle_success)
-        self.operationScreen.escape.connect(self.handle_escape)
-        self.operationScreen.load.connect(self.handle_load)
+        self.connectionScreen.success.connect(self.HandleSuccess)
+        self.operationScreen.escape.connect(self.HandleEscape)
+        self.operationScreen.load.connect(self.HandleLoad)
+        self.operationScreen.do_report.connect(self.FormReport)
         
         self.service = None
         self.data_load_worker = None
+        self.create_report_worker = None
         self.config = None
-        self.thread: QThread = None
+        self.load_thread: QThread = None
+        self.report_thread: QThread = None
         self.db_engine = None
 
-        self.initializeUI() 
+        self.InitializeUI() 
 
 
-    def initializeUI(self):
+    def InitializeUI(self):
         self.setGeometry(300, 200, 1200, 1000)
         self.setWindowTitle("App")
         
@@ -52,16 +58,16 @@ class MainWindow(QWidget):
         self.show()
 
 
-    def handle_success(self, config):
+    def HandleSuccess(self, config):
         if config is None:
             QMessageBox.critical(self, "Ошибка", "Ошибка подключения к БД")
             return
         
         try:
             self.config = config
-            self.db_engine = Dbengine(config)
+            self.db_engine = DbEngine(config)
             self.service = DbService(self.db_engine)
-            if self.service.test_connection():
+            if self.service.TestConnection():
                 self.stacked_widget.setCurrentIndex(1)
             else:
                 QMessageBox.critical(self, "Ошибка", "Ошибка подключения к БД")
@@ -69,39 +75,79 @@ class MainWindow(QWidget):
             QMessageBox.critical(self, "Ошибка", "Критическая ошибка")
 
 
-    def handle_escape(self):
+    def HandleEscape(self):
         self.stacked_widget.setCurrentIndex(0)
 
 
-    def handle_load(self, data):
+    def HandleLoad(self, data):
         
         if self.data_load_worker is None:
-            self.thread = QThread()
-            self.data_load_worker = dataLoadWorker(data[0], data[1], self.db_engine)
-            self.data_load_worker.moveToThread(self.thread)
+            self.load_thread = QThread()
+            self.data_load_worker = DataLoadWorker(data[0], data[1], self.db_engine)
+            self.data_load_worker.moveToThread(self.load_thread)
             try:
-                self.thread.started.connect(self.data_load_worker.do_work)
-                self.thread.start()
-                self.data_load_worker.finished.connect(self.finished_work)
+                self.load_thread.started.connect(self.data_load_worker.DoWork)
+                self.load_thread.start()
+                self.data_load_worker.finished.connect(self.FinishedLoad)
             except:
                 QMessageBox.critical(self, "Ошибка" ,"Ошибка при вставке")
         else:
             return False
 
 
-    def finished_work(self, success):
+    def FinishedLoad(self, success):
         if success:
             QMessageBox.information(self, "Успех" ,"Вставка прошла успешно")
         else:
             QMessageBox.critical(self, "Ошибка" ,"Ошибка при вставке")
-        self.thread.quit()
-        self.thread.wait()
+        self.load_thread.quit()
+        self.load_thread.wait()
         self.data_load_worker = None
-        self.thread = None
+        self.load_thread = None
+
+
+    def FormReport(self, data):
+
+        date_from : QDateEdit = data[0]
+        date_to : QDateEdit = data[1]
+        str_date_from = f"{date_from.date().year()}-{date_from.date().month()}-{date_from.date().day()} 00:00:00"
+        str_date_to = f"{date_to.date().year()}-{date_to.date().month()}-{date_to.date().day()} 23:59:59"
+
+
+        if self.create_report_worker is None:
+            self.report_thread = QThread()
+            self.create_report_worker = CreateReportWorker(self.db_engine, str_date_from, str_date_to, data[2])
+            self.create_report_worker.moveToThread(self.report_thread)
+            try:
+                self.report_thread.started.connect(self.create_report_worker.DoWork)
+                self.report_thread.start()
+                self.create_report_worker.finished.connect(self.FinishedReport)
+            except:
+                QMessageBox.critical(self, "Ошибка" ,"Ошибка при загрузке отчёта")
+        else:
+            return False
+
+
+    def FinisheвпdReport(self, report):
+        if report is not None and report is not False:
+            file_path, _ = QFileDialog.getSaveFileName(caption="Сохранить файл", directory="", filter=".docx")
+            if file_path:
+                if file_path[-4:] != '.docx':
+                    shutil.copy(report, file_path + '.docx')                   
+                    QMessageBox.information(self, "Отчёт сохранён")
+                else:
+                    shutil.copy(report, file_path)                   
+                    QMessageBox.information(self, "Отчёт сохранён")
+        else:
+            QMessageBox.critical(self, "Ошибка" ,"Ошибка при загрузке отчёта")
+        self.report_thread.quit()
+        self.report_thread.wait()
+        self.create_report_worker = None
+        self.report_thread = None
 
 
     @staticmethod
-    def load_stylesheet(path):
+    def LoadStylesheet(path):
         """Загрузка CSS из файла"""
         if os.path.exists(path):
             with open(path, "r", encoding="utf-8") as file:

@@ -1,17 +1,17 @@
 import sqlalchemy
 from sqlalchemy import text
 import pandas as pd
-from Db.db_engine import Dbengine
+from Db.DbEngine import DbEngine
 
 
 
-class Dbconnect():
+class DbConnect():
 
     def __init__(self, db_engine):
-        self.db_engine: Dbengine = db_engine
+        self.db_engine: DbEngine = db_engine
 
 
-    def test_connection(self):
+    def TestConnection(self):
         try:
             with self.db_engine.engine.connect() as connection:
                 connection.execute(sqlalchemy.text("SELECT 1"))
@@ -22,7 +22,7 @@ class Dbconnect():
             return False
 
 
-    def load_data(self, table, db_table):
+    def LoadData(self, table, db_table):
         if isinstance(table, pd.DataFrame):
             try:
                 with self.db_engine.engine.connect() as conn:
@@ -50,8 +50,8 @@ class Dbconnect():
                             table['datetime_minus_4'] = table['Дата и время транзакции'] - pd.Timedelta(hours=4)
                             table['hour_new'] = table['datetime_minus_4'].dt.hour
                             table['day_of_week_new'] = table['datetime_minus_4'].dt.dayofweek
-                    except:
-                        print('Невозможно преобразовать исходные данные')
+                    except Exception as e:
+                        print(f'Невозможно преобразовать исходные данные, ошибка:{e}')
                         return False
 
                     db_column_new = [item[0] for item in db_column]
@@ -75,10 +75,29 @@ class Dbconnect():
                 return False
     
     
-    # def create_reconciliation_report(self):
-    #     try:
-    #         with self.db_engine.engine.connect() as connection:
-    #             connection.execute
+    def CreateReconciliationPassagesReport(self, qdate_from, qdate_to, db_table_bill, db_table_prosmotr):
+        try:
+            with self.db_engine.engine.connect() as conn:
+                db_column = conn.execute(sqlalchemy.text(f"SELECT column_name FROM information_schema.columns WHERE table_name = '{db_table_bill}' AND table_schema = 'public' ORDER BY ordinal_position;")).fetchall()
+                try:
+                    if db_table_bill != 'bill_bbk':
+                        if ('data_i_vremya_tranzaktsii',) in db_column:
+                            output = conn.execute(sqlalchemy.text(f"SELECT (SELECT COUNT(*) FROM {db_table_bill} WHERE data_i_vremya_tranzaktsii BETWEEN '{qdate_from}' AND '{qdate_to}') AS count_table1, (SELECT COUNT(*) FROM {db_table_prosmotr} WHERE data_i_vremya_tranzaktsii BETWEEN '{qdate_from}' AND '{qdate_to}') AS count_table2;")).fetchall()[0]
+                        else:
+                            output = None
+                            print("Нет колонки data_i_vremya_tranzaktsii")
+                    else:
+                        if ('data_i_vremya_tranzaktsii',) in db_column:
+                            output = (conn.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM {db_table_bill} WHERE data_i_vremya_tranzaktsii BETWEEN '{qdate_from}' AND '{qdate_to}'")).fetchall()[0][0], None)
+                        else:
+                             output = None
+                             print("Нет колонки data_i_vremya_tranzaktsii")
+                except Exception as e:
+                    print(f"Ошибка: {e}")
+                    return False
 
-    #     except:
-    #         pass
+                return output    
+                             
+        except Exception as e:
+            print(f"Ошибка: {e}")
+            return False

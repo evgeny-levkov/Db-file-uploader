@@ -11,10 +11,10 @@ class ConnectionScreen(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.initlUi()
+        self.InitlUi()
 
 
-    def initlUi(self):
+    def InitlUi(self):
         
         #Верхние надписи
         mainLayout = QVBoxLayout()
@@ -70,11 +70,11 @@ class ConnectionScreen(QWidget):
         self.field_password.setProperty("class", "QLineEdit")
         self.field_password.setEchoMode(QLineEdit.EchoMode.Password)
         self.action = self.field_password.addAction(self.close_eye, QLineEdit.ActionPosition.TrailingPosition)
-        self.action.triggered.connect(self.set_visible_password)
+        self.action.triggered.connect(self.SetVisiblePassword)
 
         self.connect_button = QPushButton("Проверить подключение")
         self.connect_button.setProperty("class", "QPushButton")
-        self.connect_button.clicked.connect(self.connect_db)
+        self.connect_button.clicked.connect(self.ConnectDb)
 
         self.row.addWidget(self.host, 0, 0)
         self.row.addWidget(self.field_host, 1, 0)
@@ -113,7 +113,7 @@ class ConnectionScreen(QWidget):
         self.setLayout(mainLayout)
         
 
-    def connect_db(self):
+    def ConnectDb(self):
         if not self.field_user.text() or not self.field_password.text() or not self.field_host.text() or not self.field_port.text() or not self.field_name_db.text():
             self.success.emit(None)
             return
@@ -129,7 +129,7 @@ class ConnectionScreen(QWidget):
         self.success.emit(config)
 
 
-    def set_visible_password(self):
+    def SetVisiblePassword(self):
         if self.field_password.echoMode() == QLineEdit.EchoMode.Password:
             self.field_password.setEchoMode(QLineEdit.EchoMode.Normal)
             self.action.setIcon(self.open_eye)
