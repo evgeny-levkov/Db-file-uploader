@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel, QHBoxLayout, QStackedWidget, QComboBox, QFileDialog, QGridLayout, QDateEdit
 from PyQt6.QtCore import QDate
 import pandas as pd
+import os
 
 
 
@@ -125,7 +126,7 @@ class OperationScreen(QWidget):
         self.list_bank_propucts.addItem("Банковские карты")
         self.list_bank_propucts.addItem("Маас ММ")
         self.list_bank_propucts.addItem("Маас НГПТ")
-        self.list_bank_propucts.addItem("ММаас ППК")
+        self.list_bank_propucts.addItem("Маас ППК")
 
         self.label7 = QLabel("Период с")
         self.label7.setProperty("class", "label7")
@@ -216,7 +217,7 @@ class OperationScreen(QWidget):
         if file_path:
             try:
                 self.file = pd.read_excel(file_path)
-                self.file_name.setText(file_path.split("/")[-1])
+                self.file_name.setText(os.path.basename(file_path))
 
             except:
                 self.file_name.setText("Ошибка при чтении файла")

@@ -101,7 +101,9 @@ class MainWindow(QWidget):
         else:
             QMessageBox.critical(self, "Ошибка" ,"Ошибка при вставке")
         self.load_thread.quit()
-        self.load_thread.wait()
+        # self.load_thread.wait()
+        self.data_load_worker.deleteLater()
+        self.load_thread.deleteLater()
         self.data_load_worker = None
         self.load_thread = None
 
@@ -110,8 +112,10 @@ class MainWindow(QWidget):
 
         date_from : QDateEdit = data[0]
         date_to : QDateEdit = data[1]
-        str_date_from = f"{date_from.date().year()}-{date_from.date().month()}-{date_from.date().day()} 00:00:00"
-        str_date_to = f"{date_to.date().year()}-{date_to.date().month()}-{date_to.date().day()} 23:59:59"
+        date_from = date_from.date().toString("yyyy-MM-dd")
+        date_to = date_to.date().toString("yyyy-MM-dd")
+        str_date_from = f"{date_from} 00:00:00"
+        str_date_to = f"{date_to} 23:59:59"
 
 
         if self.create_report_worker is None:
@@ -128,7 +132,7 @@ class MainWindow(QWidget):
             return False
 
 
-    def FinisheвпdReport(self, report):
+    def FinishedReport(self, report):
         if report is not None and report is not False:
             file_path, _ = QFileDialog.getSaveFileName(caption="Сохранить файл", directory="", filter=".docx")
             if file_path:
@@ -141,7 +145,9 @@ class MainWindow(QWidget):
         else:
             QMessageBox.critical(self, "Ошибка" ,"Ошибка при загрузке отчёта")
         self.report_thread.quit()
-        self.report_thread.wait()
+        self.create_report_worker.deleteLater()
+        # self.report_thread.wait()
+        self.report_thread.deleteLater()
         self.create_report_worker = None
         self.report_thread = None
 

@@ -1,6 +1,5 @@
-data
-__pycache__
+data/
+__pycache__/
 schema.png
-.vscode
+.vscode/
 .DS_Store
-.Report_templates

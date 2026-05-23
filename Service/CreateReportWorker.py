@@ -2,9 +2,10 @@ from .DbService import DbService
 from PyQt6.QtCore import pyqtSignal, QObject
 
 
+
 class CreateReportWorker(QObject):
 
-    finished = pyqtSignal(tuple)
+    finished = pyqtSignal(str)
 
     def __init__(self, db_engine, date_from, date_to, user_table):
         super().__init__()

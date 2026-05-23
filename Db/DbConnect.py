@@ -2,7 +2,9 @@ import sqlalchemy
 from sqlalchemy import text
 import pandas as pd
 from Db.DbEngine import DbEngine
-
+from pathlib import Path
+import ast
+import traceback
 
 
 class DbConnect():
@@ -19,21 +21,24 @@ class DbConnect():
                 return True
         except Exception as e:
             print(f"Ошибка подключения: {e}")
+            traceback.print_exc()
             return False
 
 
     def LoadData(self, table, db_table):
         if isinstance(table, pd.DataFrame):
             try:
+                file = 'column_mapping.conf'
+                file_path = Path(file).resolve()
+                
+                with open(file_path) as f:
+                    mapping = ast.literal_eval(f.read())
+
                 with self.db_engine.engine.connect() as conn:
-                    db_column = conn.execute(sqlalchemy.text(f"SELECT column_name FROM information_schema.columns WHERE table_name = '{db_table}' AND table_schema = 'public' ORDER BY ordinal_position;")).fetchall()
+                    db_column = mapping[db_table]
                     if len(db_column) == 0:
                         print('Таблица не найдена')
                         return False
-                    if db_table not in ['sessii_prodaj_vt', 'sessii_prodaj_maas', 'reestr_prodaj_vt', 'reestr_prodaj_maas']:
-                        if ('datetime_minus_4',) not in db_column:
-                            print('В таблице отсутствует datetime_minus_4')
-                            return False 
                     try:
                         if db_table in ['sessii_prodaj_vt', 'sessii_prodaj_maas']:
                             table['Дата и время транзакции'] = pd.to_datetime(table['Дата и время транзакции'])
@@ -52,52 +57,58 @@ class DbConnect():
                             table['day_of_week_new'] = table['datetime_minus_4'].dt.dayofweek
                     except Exception as e:
                         print(f'Невозможно преобразовать исходные данные, ошибка:{e}')
+                        traceback.print_exc()
                         return False
 
-                    db_column_new = [item[0] for item in db_column]
-                    if len(db_column_new) == len(table.columns):
-                        try:
-                            table.columns = db_column_new
+                    try:
+                        table = table.rename(columns = db_column)
+
+                        order_columns = conn.execute(sqlalchemy.text(f"SELECT column_name FROM information_schema.columns WHERE table_name = '{db_table}' AND table_schema = 'public' ORDER BY ordinal_position;")).fetchall()
+                        order_columns = [item[0] for item in order_columns]
+                        
+                        if set(order_columns).issubset(table.columns):
+                            table = table[order_columns]
                             table.to_sql(f'{db_table}', self.db_engine.engine, if_exists = 'append', index = False, chunksize = 500000)
                             return True
-                        
-                        except Exception as e:
-                            print(f'Ошибка при выполнении запроса: {e}, table = "{db_table}"')
+                        else:
+                            missing_columns = set(order_columns) - set(table.columns)
+                            print(missing_columns)
                             return False
-                    else:
-                        print("Таблица не соответствует таблице в БД по количеству столбцов")
-                        print(f"{table.columns}")
-                        print(f"{db_column}")
+                    
+                    except Exception as e:
+                        print(f'Ошибка при выполнении запроса: {e}, table = "{db_table}"')
+                        traceback.print_exc()
                         return False
+
                 
             except Exception as e:
                 print(f'Ошибка при выполнении запроса: {e}, table = "{db_table}"')
+                traceback.print_exc()
                 return False
     
     
-    def CreateReconciliationPassagesReport(self, qdate_from, qdate_to, db_table_bill, db_table_prosmotr):
+    def CreateReconciliationPassagesReport(self, qdate_from, qdate_to, db_table_prosmotr):
         try:
             with self.db_engine.engine.connect() as conn:
-                db_column = conn.execute(sqlalchemy.text(f"SELECT column_name FROM information_schema.columns WHERE table_name = '{db_table_bill}' AND table_schema = 'public' ORDER BY ordinal_position;")).fetchall()
+                db_column = conn.execute(sqlalchemy.text(f"SELECT column_name FROM information_schema.columns WHERE table_name = '{db_table_prosmotr}' AND table_schema = 'public' ORDER BY ordinal_position;")).fetchall()
                 try:
-                    if db_table_bill != 'bill_bbk':
-                        if ('data_i_vremya_tranzaktsii',) in db_column:
-                            output = conn.execute(sqlalchemy.text(f"SELECT (SELECT COUNT(*) FROM {db_table_bill} WHERE data_i_vremya_tranzaktsii BETWEEN '{qdate_from}' AND '{qdate_to}') AS count_table1, (SELECT COUNT(*) FROM {db_table_prosmotr} WHERE data_i_vremya_tranzaktsii BETWEEN '{qdate_from}' AND '{qdate_to}') AS count_table2;")).fetchall()[0]
+                    if ('data_i_vremya_tranzaktsii',) in db_column:
+                        if db_table_prosmotr == 'bill_bbk':
+                            output = conn.execute(sqlalchemy.text(f"SELECT COUNT(*), COALESCE(SUM(CASE WHEN tekst_oshibki IS NOT NULL THEN 1 ELSE 0 END), 0), COALESCE(SUM(CAST(stoimost_poezdki as FLOAT)), 0) AS stoimost_prokhoda_po_dannym_nbs FROM {db_table_prosmotr} WHERE data_i_vremya_tranzaktsii BETWEEN '{qdate_from}' AND '{qdate_to}'")).fetchall()[0]
                         else:
-                            output = None
-                            print("Нет колонки data_i_vremya_tranzaktsii")
+                            output = conn.execute(sqlalchemy.text(f"SELECT COUNT(*), COALESCE(SUM(CASE WHEN (sverena_s_bankom != 'Да' OR sverena_s_bankom IS NULL) THEN 1 ELSE 0 END), 0), 1000 FROM {db_table_prosmotr} WHERE data_i_vremya_tranzaktsii BETWEEN '{qdate_from}' AND '{qdate_to}'")).fetchall()[0]
                     else:
-                        if ('data_i_vremya_tranzaktsii',) in db_column:
-                            output = (conn.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM {db_table_bill} WHERE data_i_vremya_tranzaktsii BETWEEN '{qdate_from}' AND '{qdate_to}'")).fetchall()[0][0], None)
-                        else:
-                             output = None
-                             print("Нет колонки data_i_vremya_tranzaktsii")
+                        output = None
+                        print("Нет колонки data_i_vremya_tranzaktsii")
+
                 except Exception as e:
                     print(f"Ошибка: {e}")
+                    traceback.print_exc()
                     return False
 
                 return output    
                              
         except Exception as e:
             print(f"Ошибка: {e}")
+            traceback.print_exc()
             return False
