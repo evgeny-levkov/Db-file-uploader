@@ -101,7 +101,6 @@ class MainWindow(QWidget):
         else:
             QMessageBox.critical(self, "Ошибка" ,"Ошибка при вставке")
         self.load_thread.quit()
-        # self.load_thread.wait()
         self.data_load_worker.deleteLater()
         self.load_thread.deleteLater()
         self.data_load_worker = None
@@ -136,7 +135,8 @@ class MainWindow(QWidget):
         if report is not None and report is not False:
             file_path, _ = QFileDialog.getSaveFileName(caption="Сохранить файл", directory="", filter=".docx")
             if file_path:
-                if file_path[-4:] != '.docx':
+                _, extension = os.path.splitext(file_path)
+                if extension != '.docx':
                     shutil.copy(report, file_path + '.docx')                   
                     QMessageBox.information(self, "Отчёт сохранён")
                 else:
@@ -146,7 +146,6 @@ class MainWindow(QWidget):
             QMessageBox.critical(self, "Ошибка" ,"Ошибка при загрузке отчёта")
         self.report_thread.quit()
         self.create_report_worker.deleteLater()
-        # self.report_thread.wait()
         self.report_thread.deleteLater()
         self.create_report_worker = None
         self.report_thread = None

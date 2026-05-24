@@ -1,6 +1,7 @@
 from Db.DbConnect import DbConnect
 from docxtpl import DocxTemplate
 from datetime import date, datetime
+from pathlib import Path
 import os 
 
 
@@ -25,19 +26,22 @@ class DbService:
         
         
     def CreateReconciliationPassagesReport(self, date_from, date_to, user_table):
-        if user_table == 'Маас ММ':
-            num_from_db = self.db.CreateReconciliationPassagesReport(date_from, date_to, 'prosmotr_prohodov_maas_mm')
-        elif user_table == 'Маас НГПТ':
-            num_from_db = self.db.CreateReconciliationPassagesReport(date_from, date_to, 'prosmotr_prohodov_maas_mgt')
-        elif user_table == 'Маас ППК':
-            num_from_db = self.db.CreateReconciliationPassagesReport(date_from, date_to, 'prosmotr_prohodov_maas_ppk')
-        elif user_table == 'Банковские карты':
-            num_from_db = self.db.CreateReconciliationPassagesReport(date_from, date_to, 'bill_bbk')
+
+        user_table_map = {
+            'Маас ММ': 'prosmotr_prohodov_maas_mm',
+            'Маас НГПТ': 'prosmotr_prohodov_maas_mgt',
+            'Маас ППК': 'prosmotr_prohodov_maas_ppk',
+            'Банковские карты': 'bill_bbk',
+        }
+        num_from_db = self.db.CreateReconciliationPassagesReport(date_from, date_to, user_table_map.get(user_table, 'bill_bbk'))
 
         if num_from_db == None or num_from_db == False:
             return False
 
-        doc = DocxTemplate("report_without_BBK.docx")
+        script_dir = Path(__file__).resolve().parent
+        templates = script_dir.parent/'Report_templates/report_1.docx'
+
+        doc = DocxTemplate(templates)
         try:
             pers = (round( (num_from_db[1]/num_from_db[0]) *100, 2))
         except:
