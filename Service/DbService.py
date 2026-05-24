@@ -3,7 +3,7 @@ from docxtpl import DocxTemplate
 from datetime import date, datetime
 from pathlib import Path
 import os 
-
+from tempfile import NamedTemporaryFile
 
 
 class DbService:
@@ -34,35 +34,34 @@ class DbService:
             'Банковские карты': 'bill_bbk',
         }
         num_from_db = self.db.CreateReconciliationPassagesReport(date_from, date_to, user_table_map.get(user_table, 'bill_bbk'))
-
         if num_from_db == None or num_from_db == False:
             return False
 
         script_dir = Path(__file__).resolve().parent
-        templates = script_dir.parent/'Report_templates/report_1.docx'
+        templates = script_dir.parent/'Report_templates'/'report_1.docx'
 
         doc = DocxTemplate(templates)
         try:
-            pers = (round( (num_from_db[1]/num_from_db[0]) *100, 2))
+            pers = (round( ((num_from_db[0] - num_from_db[1]) / num_from_db[0]) *100, 2))
         except:
-            pers = 0
+            pers = "Ошибка"
 
         res_grade = "Плохо" if pers < 35 else ("Нормально" if pers < 80 else "Хорошо")
-
         content = {
             "time_start": date_from,
             "time_end" : date_to,
             "time_today": date.today(),
             "product_name": user_table,
             "row_bill_count": num_from_db[0],
-            "row_prosmotr_count": num_from_db[1],
+            "row_prosm_count": (num_from_db[0] - num_from_db[1]), 
             "persent": pers,
             "persent_grade": res_grade,
-            "different_count": (num_from_db[0] - num_from_db[1]),
+            "different_count": (num_from_db[1])
         }
 
         doc.render(content)
-        doc_name = f"Отчёт{datetime.now()}.docx".replace(':', '_')
-        doc.save(doc_name)
+        tpm = NamedTemporaryFile(suffix = '.docx', delete = False)
+        tpm.close()
+        doc.save(tpm.name)
 
-        return os.path.abspath(doc_name)
+        return tpm.name

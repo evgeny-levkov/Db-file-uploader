@@ -1,6 +1,6 @@
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel, QHBoxLayout, QStackedWidget, QComboBox, QFileDialog, QGridLayout, QDateEdit
+from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel, QHBoxLayout, QStackedWidget, QComboBox, QFileDialog, QGridLayout, QDateEdit, QProgressBar
 from PyQt6.QtCore import QDate
 import pandas as pd
 import os
@@ -81,6 +81,8 @@ class OperationScreen(QWidget):
 
         self.upload_button = QPushButton("Загрузить")
         self.upload_button.clicked.connect(self.UploadDb)
+        self.load_progress = QProgressBar(self)
+        self.load_progress.setVisible(False)
 
         self.file_name = QLabel("Файл не выбран")
         self.file_name.setProperty("class", "label7")
@@ -110,6 +112,7 @@ class OperationScreen(QWidget):
         self.load_data_loyuot.addWidget(self.list_tables)
         self.load_data_loyuot.addWidget(self.label4)
         self.load_data_loyuot.addLayout(self.open_file_loyuot)
+        self.load_data_loyuot.addWidget(self.load_progress)
         
         self.load_data_loyuot.addStretch(0)
 
@@ -151,6 +154,8 @@ class OperationScreen(QWidget):
 
         self.do_report_button = QPushButton("Сформировать отчёт")
         self.do_report_button.clicked.connect(self.DoReport)
+        self.form_progress = QProgressBar(self)
+        self.form_progress.setVisible(False)
 
         self.form_report_grid = QGridLayout()
 
@@ -182,6 +187,7 @@ class OperationScreen(QWidget):
 
         self.form_report_loyout.addWidget(self.label5)
         self.form_report_loyout.addLayout(self.form_report_grid)
+        self.form_report_loyout.addWidget(self.form_progress)
         self.form_report_loyout.addStretch(0)
 
 
@@ -227,7 +233,9 @@ class OperationScreen(QWidget):
     def UploadDb(self):
         if self.file is not None:
             self.load.emit((self.file, self.list_tables.currentText()))
-
+            self.upload_button.setEnabled(False)
+            self.load_progress.setVisible(True)
+            self.load_progress.setRange(0, 0)
 
     def GoToScreen1(self):
         self.escape.emit()
@@ -235,3 +243,6 @@ class OperationScreen(QWidget):
 
     def DoReport(self):
         self.do_report.emit((self.date_from, self.date_to, self.list_bank_propucts.currentText()))
+        self.do_report_button.setEnabled(False)
+        self.form_progress.setVisible(True)
+        self.form_progress.setRange(0, 0)

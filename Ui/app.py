@@ -97,6 +97,8 @@ class MainWindow(QWidget):
 
     def FinishedLoad(self, success):
         if success:
+            self.operationScreen.upload_button.setEnabled(True)
+            self.operationScreen.load_progress.setVisible(False)
             QMessageBox.information(self, "Успех" ,"Вставка прошла успешно")
         else:
             QMessageBox.critical(self, "Ошибка" ,"Ошибка при вставке")
@@ -137,13 +139,16 @@ class MainWindow(QWidget):
             if file_path:
                 _, extension = os.path.splitext(file_path)
                 if extension != '.docx':
-                    shutil.copy(report, file_path + '.docx')                   
-                    QMessageBox.information(self, "Отчёт сохранён")
+                    shutil.copy(report, file_path + '.docx')           
+                    QMessageBox.information(self, "Успех", "Отчёт сохранён")
                 else:
-                    shutil.copy(report, file_path)                   
-                    QMessageBox.information(self, "Отчёт сохранён")
+                    shutil.copy(report, file_path)
+                    QMessageBox.information(self, "Успех", "Отчёт сохранён")
+            os.remove(report)   
         else:
             QMessageBox.critical(self, "Ошибка" ,"Ошибка при загрузке отчёта")
+        self.operationScreen.do_report_button.setEnabled(True)
+        self.operationScreen.form_progress.setVisible(False)
         self.report_thread.quit()
         self.create_report_worker.deleteLater()
         self.report_thread.deleteLater()
