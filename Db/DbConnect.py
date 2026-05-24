@@ -28,9 +28,7 @@ class DbConnect():
     def LoadData(self, table, db_table):
         if isinstance(table, pd.DataFrame):
             try:
-                file = 'column_mapping.conf'
-                file_path = Path(file).resolve()
-                
+                file_path = Path('column_mapping.conf').resolve()
                 with open(file_path) as f:
                     mapping = ast.literal_eval(f.read())
 
@@ -94,9 +92,9 @@ class DbConnect():
                 try:
                     if ('data_i_vremya_tranzaktsii',) in db_column:
                         if db_table_prosmotr == 'bill_bbk':
-                            output = conn.execute(sqlalchemy.text(f"SELECT COUNT(*), COALESCE(SUM(CASE WHEN tekst_oshibki IS NOT NULL THEN 1 ELSE 0 END), 0), COALESCE(SUM(CAST(stoimost_poezdki as FLOAT)), 0) AS stoimost_prokhoda_po_dannym_nbs FROM {db_table_prosmotr} WHERE data_i_vremya_tranzaktsii BETWEEN '{qdate_from}' AND '{qdate_to}'")).fetchall()[0]
+                            output = conn.execute(sqlalchemy.text(f"SELECT COUNT(*), COALESCE(SUM(CASE WHEN tekst_oshibki IS NOT NULL THEN 1 ELSE 0 END), 0) FROM {db_table_prosmotr} WHERE data_i_vremya_tranzaktsii BETWEEN '{qdate_from}' AND '{qdate_to}'")).fetchall()[0]
                         else:
-                            output = conn.execute(sqlalchemy.text(f"SELECT COUNT(*), COALESCE(SUM(CASE WHEN (sverena_s_bankom != 'Да' OR sverena_s_bankom IS NULL) THEN 1 ELSE 0 END), 0), 1000 FROM {db_table_prosmotr} WHERE data_i_vremya_tranzaktsii BETWEEN '{qdate_from}' AND '{qdate_to}'")).fetchall()[0]
+                            output = conn.execute(sqlalchemy.text(f"SELECT COUNT(*), COALESCE(SUM(CASE WHEN (sverena_s_bankom != 'Да' OR sverena_s_bankom IS NULL) THEN 1 ELSE 0 END), 0) FROM {db_table_prosmotr} WHERE data_i_vremya_tranzaktsii BETWEEN '{qdate_from}' AND '{qdate_to}'")).fetchall()[0]
                     else:
                         output = None
                         print("Нет колонки data_i_vremya_tranzaktsii")

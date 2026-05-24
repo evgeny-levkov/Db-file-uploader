@@ -42,6 +42,9 @@ class DbService:
             pers = (round( (num_from_db[1]/num_from_db[0]) *100, 2))
         except:
             pers = 0
+
+        res_grade = "Плохо" if pers < 35 else ("Нормально" if pers < 80 else "Хорошо")
+
         content = {
             "time_start": date_from,
             "time_end" : date_to,
@@ -50,8 +53,8 @@ class DbService:
             "row_bill_count": num_from_db[0],
             "row_prosmotr_count": num_from_db[1],
             "persent": pers,
+            "persent_grade": res_grade,
             "different_count": (num_from_db[0] - num_from_db[1]),
-            "sum": num_from_db[2],
         }
 
         doc.render(content)
