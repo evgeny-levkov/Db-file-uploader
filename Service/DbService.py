@@ -6,7 +6,7 @@ class DbService:
 
     def __init__(self, db_engine):
         self.db = DbConnect(db_engine)
-        self.reconcilation_report = None
+        self.report = None
 
 
     def TestConnection(self):
@@ -23,5 +23,5 @@ class DbService:
         
         
     def CreateReconciliationPassagesReport(self, date_from, date_to, user_table):
-        self.reconcilation_report = CreateReconciliationPassagesReport(self.db ,date_from, date_to, user_table)
-        return self.reconcilation_report.CreateReport()
+        self.report = CreateReconciliationPassagesReport(self.db ,date_from, date_to, user_table)
+        return self.report.CreateReport()
