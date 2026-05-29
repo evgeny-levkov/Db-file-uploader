@@ -1,4 +1,4 @@
-from Db.DbConnect import DbConnect
+from DAO.Db.DbConnect import DbConnect
 from docxtpl import DocxTemplate
 from datetime import date
 from pathlib import Path

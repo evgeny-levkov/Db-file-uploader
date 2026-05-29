@@ -1,5 +1,5 @@
-from Db.DbConnect import DbConnect
-from .CreateReconciliationPassagesReport import CreateReconciliationPassagesReport 
+from DAO.Db.DbConnect import DbConnect
+from .Reports.CreateReconciliationPassagesReport import CreateReconciliationPassagesReport 
 
 
 class DbService:

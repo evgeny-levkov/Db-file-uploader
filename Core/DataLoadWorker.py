@@ -1,4 +1,4 @@
-from .DbService import DbService
+from ..Service.DbService import DbService
 from PyQt6.QtCore import pyqtSignal, QObject
 
 

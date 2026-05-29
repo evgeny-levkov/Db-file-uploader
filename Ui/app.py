@@ -4,10 +4,10 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QStackedWidget, QMessageBox, Q
 from Ui.ConnectWindow import ConnectionScreen
 from Ui.OperationWindow import OperationScreen
 from Service.DbService import DbService
-from Service.DataLoadWorker import DataLoadWorker
-from Service.CreateReportWorker import CreateReportWorker 
+from Core.DataLoadWorker import DataLoadWorker
+from Core.CreateReportWorker import CreateReportWorker 
 from PyQt6.QtCore import QThread
-from Db.DbEngine import DbEngine
+from DAO.Db.DbEngine import DbEngine
 import os
 import shutil
 
