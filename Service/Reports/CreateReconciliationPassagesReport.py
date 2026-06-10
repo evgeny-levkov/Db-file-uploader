@@ -4,6 +4,7 @@ from datetime import date
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
+from settings import BASE_DIR, MAPPING
 
 class CreateReconciliationPassagesReport:
 
@@ -25,11 +26,10 @@ class CreateReconciliationPassagesReport:
         if num_from_db == None or num_from_db == False:
             return False
 
-        script_dir = Path(__file__).resolve().parent
-        templates = script_dir.parent/'Report_templates'/'report_1.docx'
+        full_report_path = BASE_DIR/MAPPING['file_path']['path_report_1']
 
         try:
-            doc = DocxTemplate(templates)
+            doc = DocxTemplate(full_report_path)
             try:
                 pers = (round( ((num_from_db[0] - num_from_db[1]) / num_from_db[0]) *100, 2))
             except:

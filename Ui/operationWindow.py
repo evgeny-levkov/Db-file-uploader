@@ -152,6 +152,14 @@ class OperationScreen(QWidget):
         self.list_formats.setProperty("class", "QComboBox")
         self.list_formats.addItem("Word")
 
+        self.report_type = QLabel("Тип отчёта")
+        self.report_type.setProperty("class", "label7")
+
+        self.list_report_type = QComboBox()
+        self.list_report_type.setProperty("class", "QComboBox")
+        self.list_report_type.addItem("Проходы")
+        self.list_report_type.addItem("Продажи")
+
         self.do_report_button = QPushButton("Сформировать отчёт")
         self.do_report_button.clicked.connect(self.DoReport)
         self.form_progress = QProgressBar(self)
@@ -171,6 +179,9 @@ class OperationScreen(QWidget):
         self.form_report_grid.addWidget(self.date_to, 3, 0)
         self.form_report_grid.addWidget(self.list_formats, 3, 1)
 
+        self.form_report_grid.addWidget(self.report_type, 4, 0)
+        self.form_report_grid.addWidget(self.list_report_type, 5, 0)
+
         self.do_report_loyout = QHBoxLayout()
         self.null_coll4 = QLabel()
         self.null_coll_6 = QLabel()
@@ -181,8 +192,8 @@ class OperationScreen(QWidget):
         self.do_report_loyout.addWidget(self.null_coll4, 3)  
         self.do_report_loyout.addWidget(self.null_coll_6, 3)    
         
-        self.form_report_grid.addWidget(self.null_widget_1, 4, 0)
-        self.form_report_grid.addLayout(self.do_report_loyout, 5, 0, 1, 2)
+        self.form_report_grid.addWidget(self.null_widget_1, 6, 0)
+        self.form_report_grid.addLayout(self.do_report_loyout, 6, 0, 1, 2)
 
 
         self.form_report_loyout.addWidget(self.label5)
