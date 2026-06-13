@@ -26,7 +26,7 @@ class CreateReconciliationPassagesReport(BaseReport):
         self.date_from = f"{self.date_from} 00:00:00"
         self.date_to = f"{self.date_to} 23:59:59"
 
-        num_from_db = self.db.CreateReconciliationPassagesReport(self.date_from, self.date_to, user_table_map.get(self.list_blank, 'bill_bbk'))
+        num_from_db = self.db.CreateReconciliationPassagesReport(self.date_from, self.date_to, user_table_map.get(self.user_table, 'bill_bbk'))
         if num_from_db == None or num_from_db == False:
             return False
 
@@ -44,7 +44,7 @@ class CreateReconciliationPassagesReport(BaseReport):
                 "time_start": self.date_from,
                 "time_end" : self.date_to,
                 "time_today": date.today(),
-                "product_name": self.list_blank,
+                "product_name": self.user_table,
                 "row_bill_count": num_from_db[0],
                 "row_prosm_count": (num_from_db[0] - num_from_db[1]), 
                 "persent": pers,
