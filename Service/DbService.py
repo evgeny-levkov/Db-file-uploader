@@ -7,8 +7,8 @@ from .DataTransform import DataTransform
 
 class DbService:
 
-    def __init__(self, db_engine):
-        self.db = DbConnect(db_engine)
+    def __init__(self, db_connection : DbConnect):
+        self.db = db_connection
 
 
     def TestConnection(self):

@@ -8,9 +8,9 @@ class DataLoadWorker(QObject):
     connect = pyqtSignal(object)
     finished = pyqtSignal(object)
 
-    def __init__(self, table, db_table, db_engine):
+    def __init__(self, table, db_table, db_service : DbService):
         super().__init__()
-        self._service = DbService(db_engine)
+        self._service = db_service
         self.table = table
         self.db_table = db_table
 

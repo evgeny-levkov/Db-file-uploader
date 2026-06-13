@@ -8,8 +8,8 @@ import traceback
 
 class DbConnect():
 
-    def __init__(self, db_engine):
-        self.db_engine: DbEngine = db_engine
+    def __init__(self, db_engine : DbEngine):
+        self.db_engine = db_engine
 
 
     def TestConnection(self):

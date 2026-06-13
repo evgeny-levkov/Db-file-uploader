@@ -7,9 +7,9 @@ class CreateReportWorker(QObject):
 
     finished = pyqtSignal(str)
 
-    def __init__(self, db_engine, data):
+    def __init__(self, db_service : DbService, data):
         super().__init__()
-        self._service = DbService(db_engine)
+        self._service = db_service
         self.data = data
 
 

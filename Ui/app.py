@@ -8,6 +8,7 @@ from Core.DataLoadWorker import DataLoadWorker
 from Core.CreateReportWorker import CreateReportWorker 
 from PyQt6.QtCore import QThread
 from DAO.Db.DbEngine import DbEngine
+from DAO.Db.DbConnect import DbConnect
 import os
 import shutil
 
@@ -66,7 +67,8 @@ class MainWindow(QWidget):
         try:
             self.config = config
             self.db_engine = DbEngine(config)
-            self.service = DbService(self.db_engine)
+            self.db_connection = DbConnect(self.db_engine)
+            self.service = DbService(self.db_connection)
             if self.service.TestConnection():
                 self.stacked_widget.setCurrentIndex(1)
             else:
@@ -83,7 +85,7 @@ class MainWindow(QWidget):
         
         if self.data_load_worker is None:
             self.load_thread = QThread()
-            self.data_load_worker = DataLoadWorker(data[0], data[1], self.db_engine)
+            self.data_load_worker = DataLoadWorker(data[0], data[1], self.service)
             self.data_load_worker.moveToThread(self.load_thread)
             try:
                 self.load_thread.started.connect(self.data_load_worker.DoWork)
@@ -113,7 +115,7 @@ class MainWindow(QWidget):
 
         if self.create_report_worker is None:
             self.report_thread = QThread()
-            self.create_report_worker = CreateReportWorker(self.db_engine, data)
+            self.create_report_worker = CreateReportWorker(self.service, data)
             self.create_report_worker.moveToThread(self.report_thread)
             try:
                 self.report_thread.started.connect(self.create_report_worker.DoWork)
