@@ -256,7 +256,8 @@ class OperationScreen(QWidget):
         emit_dict = {
             "date_from": self.date_from.date().toString("yyyy-MM-dd"),
             "date_to": self.date_to.date().toString("yyyy-MM-dd"),
-            "list_blank": self.list_bank_propucts.currentText()
+            "user_table": self.list_bank_propucts.currentText(),
+            "type_report": self.list_report_type.currentText(),
         }
 
         self.do_report.emit(emit_dict)

@@ -1,12 +1,13 @@
 from DAO.Db.DbConnect import DbConnect
-from .Reports.CreateReconciliationPassagesReport import CreateReconciliationPassagesReport 
+from Service.BaseReport import BaseReport
+from Service.ReportFactory import ReportFactory
+from settings import MAPPING
 
 
 class DbService:
 
     def __init__(self, db_engine):
         self.db = DbConnect(db_engine)
-        self.report = None
 
 
     def TestConnection(self):
@@ -22,6 +23,7 @@ class DbService:
             return False
         
         
-    def CreateReconciliationPassagesReport(self, data):
-        self.report = CreateReconciliationPassagesReport(self.db ,data["date_from"], data["date_to"], data["list_blank"])
-        return self.report.CreateReport()
+    def GenerateReport(self, data):
+        self.report_type = MAPPING["report_type"][data["type_report"]]
+        factory: BaseReport = ReportFactory.create_report(self.db, self.report_type, data)
+        return factory.CreateReport()

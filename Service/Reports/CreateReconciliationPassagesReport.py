@@ -3,16 +3,17 @@ from docxtpl import DocxTemplate
 from datetime import date
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-
 from settings import BASE_DIR, MAPPING
+from Service.ReportFactory import ReportFactory
+from Service.BaseReport import BaseReport
 
-class CreateReconciliationPassagesReport:
 
-    def __init__(self, db_connect, date_from, date_to, user_table):
-        self.db: DbConnect = db_connect
-        self.date_from = date_from 
-        self.date_to = date_to
-        self.user_table = user_table
+@ReportFactory.register("CreateReconciliationPassagesReport")
+class CreateReconciliationPassagesReport(BaseReport):
+
+    def __init__(self, db, data_dict):
+        super().__init__(db, data_dict)
+
 
     def CreateReport(self):
 
@@ -24,8 +25,8 @@ class CreateReconciliationPassagesReport:
         }
         self.date_from = f"{self.date_from} 00:00:00"
         self.date_to = f"{self.date_to} 23:59:59"
-        
-        num_from_db = self.db.CreateReconciliationPassagesReport(self.date_from, self.date_to, user_table_map.get(self.user_table, 'bill_bbk'))
+
+        num_from_db = self.db.CreateReconciliationPassagesReport(self.date_from, self.date_to, user_table_map.get(self.list_blank, 'bill_bbk'))
         if num_from_db == None or num_from_db == False:
             return False
 
@@ -43,7 +44,7 @@ class CreateReconciliationPassagesReport:
                 "time_start": self.date_from,
                 "time_end" : self.date_to,
                 "time_today": date.today(),
-                "product_name": self.user_table,
+                "product_name": self.list_blank,
                 "row_bill_count": num_from_db[0],
                 "row_prosm_count": (num_from_db[0] - num_from_db[1]), 
                 "persent": pers,
