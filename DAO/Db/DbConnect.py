@@ -25,53 +25,27 @@ class DbConnect():
 
 
     def LoadData(self, table, db_table):
-        if isinstance(table, pd.DataFrame):
+        try:
             with self.db_engine.engine.connect() as conn:
-                db_column = MAPPING[db_table]
-                if len(db_column) == 0:
-                    print('Таблица не найдена')
+
+                order_columns = conn.execute(sqlalchemy.text(f"SELECT column_name FROM information_schema.columns WHERE table_name = '{db_table}' AND table_schema = 'public' ORDER BY ordinal_position;")).fetchall()
+                order_columns = [item[0] for item in order_columns]
+                    
+                if set(order_columns).issubset(table.columns):
+                    table = table[order_columns]
+                    table.to_sql(f'{db_table}', self.db_engine.engine, if_exists = 'append', index = False, chunksize = 500000)                            
+                    return True
+                    
+                else:
+                    missing_columns = set(order_columns) - set(table.columns)
+                    print(missing_columns)
                     return False
-                try:
-                    if db_table in ['sessii_prodaj_vt', 'sessii_prodaj_maas']:
-                        table['Дата и время транзакции'] = pd.to_datetime(table['Дата и время транзакции'])
-                        table['day_of_week_new'] = table['Дата и время транзакции'].dt.dayofweek
-                        table['hour_new'] = table['Дата и время транзакции'].dt.hour
-
-                    elif db_table in ['reestr_prodaj_vt', 'reestr_prodaj_maas']:
-                        table['TransportTime'] = pd.to_datetime(table['TransportTime'])
-                        table['day_of_week_new'] = table['TransportTime'].dt.dayofweek
-                        table['hour_new'] = table['TransportTime'].dt.hour
-
-                    else:
-                        table['Дата и время транзакции'] = pd.to_datetime(table['Дата и время транзакции'])
-                        table['datetime_minus_4'] = table['Дата и время транзакции'] - pd.Timedelta(hours=4)
-                        table['hour_new'] = table['datetime_minus_4'].dt.hour
-                        table['day_of_week'] = table['datetime_minus_4'].dt.dayofweek
-                except Exception as e:
-                        print(f'Невозможно преобразовать исходные данные, ошибка:{e}')
-                        traceback.print_exc()
-                        return False
-
-                try:
-                    table = table.rename(columns = db_column)
-
-                    order_columns = conn.execute(sqlalchemy.text(f"SELECT column_name FROM information_schema.columns WHERE table_name = '{db_table}' AND table_schema = 'public' ORDER BY ordinal_position;")).fetchall()
-                    order_columns = [item[0] for item in order_columns]
                     
-                    if set(order_columns).issubset(table.columns):
-                        table = table[order_columns]
-                        table.to_sql(f'{db_table}', self.db_engine.engine, if_exists = 'append', index = False, chunksize = 500000)                            
-                        return True
-                    
-                    else:
-                        missing_columns = set(order_columns) - set(table.columns)
-                        print(missing_columns)
-                        return False
-                    
-                except Exception as e:
-                    print(f'Ошибка при выполнении запроса: {e}, table = "{db_table}"')
-                    traceback.print_exc()
-                    return False
+
+        except Exception as e:
+            print(f'Ошибка при выполнении запроса: {e}, table = "{db_table}"')
+            traceback.print_exc()
+            return False
     
     
     def CreateReconciliationPassagesReport(self, qdate_from, qdate_to, db_table_prosmotr):

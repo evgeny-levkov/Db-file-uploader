@@ -2,6 +2,7 @@ from DAO.Db.DbConnect import DbConnect
 from Service.BaseReport import BaseReport
 from Service.ReportFactory import ReportFactory
 from settings import MAPPING
+from .DataTransform import DataTransform
 
 
 class DbService:
@@ -16,6 +17,8 @@ class DbService:
 
     def LoadData(self, table, db_table):
         try:
+            dt_transform = DataTransform(table, db_table)
+            table = dt_transform.Transform()
             return self.db.LoadData(table, db_table)
         
         except Exception as e:
