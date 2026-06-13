@@ -22,6 +22,9 @@ class CreateReconciliationPassagesReport:
             'Маас ППК': 'prosmotr_prohodov_maas_ppk',
             'Банковские карты': 'bill_bbk',
         }
+        self.date_from = f"{self.date_from} 00:00:00"
+        self.date_to = f"{self.date_to} 23:59:59"
+        
         num_from_db = self.db.CreateReconciliationPassagesReport(self.date_from, self.date_to, user_table_map.get(self.user_table, 'bill_bbk'))
         if num_from_db == None or num_from_db == False:
             return False

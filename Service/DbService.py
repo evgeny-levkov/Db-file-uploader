@@ -22,6 +22,6 @@ class DbService:
             return False
         
         
-    def CreateReconciliationPassagesReport(self, date_from, date_to, user_table):
-        self.report = CreateReconciliationPassagesReport(self.db ,date_from, date_to, user_table)
+    def CreateReconciliationPassagesReport(self, data):
+        self.report = CreateReconciliationPassagesReport(self.db ,data["date_from"], data["date_to"], data["list_blank"])
         return self.report.CreateReport()

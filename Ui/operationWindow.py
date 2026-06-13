@@ -11,7 +11,7 @@ class OperationScreen(QWidget):
 
     escape = pyqtSignal()
     load = pyqtSignal(tuple)
-    do_report = pyqtSignal(tuple)
+    do_report = pyqtSignal(dict)
 
     def __init__(self):
         super().__init__()
@@ -253,7 +253,13 @@ class OperationScreen(QWidget):
 
 
     def DoReport(self):
-        self.do_report.emit((self.date_from, self.date_to, self.list_bank_propucts.currentText()))
+        emit_dict = {
+            "date_from": self.date_from.date().toString("yyyy-MM-dd"),
+            "date_to": self.date_to.date().toString("yyyy-MM-dd"),
+            "list_blank": self.list_bank_propucts.currentText()
+        }
+
+        self.do_report.emit(emit_dict)
         self.do_report_button.setEnabled(False)
         self.form_progress.setVisible(True)
         self.form_progress.setRange(0, 0)

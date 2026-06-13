@@ -111,17 +111,9 @@ class MainWindow(QWidget):
 
     def FormReport(self, data):
 
-        date_from : QDateEdit = data[0]
-        date_to : QDateEdit = data[1]
-        date_from = date_from.date().toString("yyyy-MM-dd")
-        date_to = date_to.date().toString("yyyy-MM-dd")
-        str_date_from = f"{date_from} 00:00:00"
-        str_date_to = f"{date_to} 23:59:59"
-
-
         if self.create_report_worker is None:
             self.report_thread = QThread()
-            self.create_report_worker = CreateReportWorker(self.db_engine, str_date_from, str_date_to, data[2])
+            self.create_report_worker = CreateReportWorker(self.db_engine, data)
             self.create_report_worker.moveToThread(self.report_thread)
             try:
                 self.report_thread.started.connect(self.create_report_worker.DoWork)
