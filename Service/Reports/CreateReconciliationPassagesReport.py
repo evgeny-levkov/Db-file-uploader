@@ -1,11 +1,9 @@
-from DAO.Db.DbConnect import DbConnect
 from docxtpl import DocxTemplate
 from datetime import date
-from pathlib import Path
 from tempfile import NamedTemporaryFile
 from settings import BASE_DIR, MAPPING
-from Service.ReportFactory import ReportFactory
-from Service.BaseReport import BaseReport
+from .ReportFactory import ReportFactory
+from .BaseReport import BaseReport
 
 
 @ReportFactory.register("CreateReconciliationPassagesReport")

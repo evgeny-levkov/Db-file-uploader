@@ -1,8 +1,8 @@
 from DAO.Db.DbConnect import DbConnect
-from Service.BaseReport import BaseReport
-from Service.ReportFactory import ReportFactory
+from .Reports.BaseReport import BaseReport
+from .Reports.ReportFactory import ReportFactory
 from settings import MAPPING
-from .DataTransform import DataTransform
+from .Strategy.DataTransform import DataTransform
 
 
 class DbService:

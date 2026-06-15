@@ -1,10 +1,10 @@
 import pandas as pd
 from settings import MAPPING
 import traceback
-from .Strategy.BaseStrategy import BaseStrategy
-from .Strategy.StrategyPassages import StrategyPassages
-from .Strategy.StrategyReestry import StrategyReestry
-from .Strategy.StrategySessii import StrategySessii
+from .BaseStrategy import BaseStrategy
+from .StrategyPassages import StrategyPassages
+from .StrategyReestry import StrategyReestry
+from .StrategySessii import StrategySessii
 
 
 class DataTransform():
