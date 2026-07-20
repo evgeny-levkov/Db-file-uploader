@@ -21,4 +21,4 @@ class ReportFactory():
                                                                                                       
         return report_class(db, config)
     
-import Service.Reports.CreateReconciliationPassagesReport 
+import Service.Reports.CreateReconciliationPassagersReport

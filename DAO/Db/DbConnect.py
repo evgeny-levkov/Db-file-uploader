@@ -48,7 +48,7 @@ class DbConnect():
             return False
     
     
-    def CreateReconciliationPassagesReport(self, qdate_from, qdate_to, db_table_prosmotr):
+    def CreateReconciliationPassagersReport(self, qdate_from, qdate_to, db_table_prosmotr):
         try:
             with self.db_engine.engine.connect() as conn:
                 db_column = conn.execute(sqlalchemy.text(f"SELECT column_name FROM information_schema.columns WHERE table_name = '{db_table_prosmotr}' AND table_schema = 'public' ORDER BY ordinal_position;")).fetchall()
