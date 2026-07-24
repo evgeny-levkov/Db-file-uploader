@@ -28,5 +28,5 @@ class DbService:
         
     def GenerateReport(self, data):
         self.report_type = MAPPING["report_type"][data["type_report"]]
-        factory: BaseReport = ReportFactory.create_report(self.db, self.report_type, data)
+        factory: BaseReport = ReportFactory.create_object(self.report_type, self.db, data)
         return factory.CreateReport()

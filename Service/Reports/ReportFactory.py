@@ -1,24 +1,17 @@
-from DAO.Db.DbConnect import DbConnect
-
-
 class ReportFactory():
 
-    _register = {}
+    registry = {}
 
-    @classmethod                                                                                                                                              
-    def register(cls, name: str):                                                                                                                             
-        def decorator(subclass):                                                                                                                              
-            cls._register[name] = subclass                                                                                                                    
-            return subclass                                                                                                                                   
-        return decorator                                                                                                                                      
-
-
-    @classmethod                                                                                                                                              
-    def create_report(cls, db: DbConnect, name: str, config: dict):                                                                                                         
-        report_class = cls._register.get(name)                                                                                                               
-        if not report_class:                                                                                                                                 
-            raise ValueError(f"Отчёт {name} не найден")     
-                                                                                                      
-        return report_class(db, config)
+    @classmethod
+    def register(cls, name):
+        def decorator(func):
+            cls.registry[name] = func
+            return func
+        return decorator
     
-import Service.Reports.CreateReconciliationPassagersReport
+
+    @staticmethod
+    def create_object(name, db, data_dict):
+        if name not in ReportFactory.registry:
+            raise ValueError("No such class in dictionary")
+        return ReportFactory.registry[name](db, data_dict)
