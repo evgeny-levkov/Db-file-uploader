@@ -1,16 +1,15 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QGridLayout, QSizePolicy
 from PyQt6.QtGui import QIcon
+from viewmodel.ConnectionViewModel import ConnectionViewModel
 
 
 
 class ConnectionScreen(QWidget):
 
-    success = pyqtSignal(object)
-
-    def __init__(self):
+    def __init__(self, viewmodel):
         super().__init__()
+        self.viewmodel : ConnectionViewModel = viewmodel
         self.InitlUi()
 
 
@@ -114,19 +113,7 @@ class ConnectionScreen(QWidget):
         
 
     def ConnectDb(self):
-        if not self.field_user.text() or not self.field_password.text() or not self.field_host.text() or not self.field_port.text() or not self.field_name_db.text():
-            self.success.emit(None)
-            return
-        
-        config ={
-            "user": self.field_user.text(),
-            "password": self.field_password.text(),
-            "host": self.field_host.text(),
-            "port": self.field_port.text(),
-            "db_name": self.field_name_db.text()
-        }
-
-        self.success.emit(config)
+        self.viewmodel.ConnectDb(self.field_user.text(), self.field_password.text(), self.field_host.text(), self.field_port.text(), self.field_name_db.text())
 
 
     def SetVisiblePassword(self):

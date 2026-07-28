@@ -1,9 +1,9 @@
 from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel, QHBoxLayout, QStackedWidget, QComboBox, QFileDialog, QGridLayout, QDateEdit, QProgressBar
+from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel, QHBoxLayout, QStackedWidget, QComboBox, QFileDialog, QGridLayout, QDateEdit, QProgressBar, QMessageBox
 from PyQt6.QtCore import QDate
-import pandas as pd
+from viewmodel.OperationViewModel import OperationViewModel
 import os
+import shutil
 
 
 
@@ -13,8 +13,9 @@ class OperationScreen(QWidget):
     load = pyqtSignal(tuple)
     do_report = pyqtSignal(dict)
 
-    def __init__(self):
+    def __init__(self, viewmodel: OperationViewModel):
         super().__init__()
+        self.viewmodel: OperationViewModel = viewmodel
         self.stacked_widget = QStackedWidget()
         self.load_data = QWidget()
         self.form_report = QWidget()
@@ -24,6 +25,12 @@ class OperationScreen(QWidget):
         self.stacked_widget.addWidget(self.form_report)
 
         self.InitlUi()
+
+        self.viewmodel.file_name.connect(self.file_name.setText)
+        self.viewmodel.load_error.connect(self.LoadError)
+        self.viewmodel.load_info.connect(self.LoadInfo)
+        self.viewmodel.report_error.connect(self.ReportError)
+        self.viewmodel.report_success.connect(self.ReportSuccess)
 
 
     def InitlUi(self):
@@ -230,37 +237,55 @@ class OperationScreen(QWidget):
 
     def OpenFile(self):
         file_path, _ = QFileDialog.getOpenFileName(self, "Выберите XLSX файл", "", "Excel (*.xlsx)")
-
-        if file_path:
-            try:
-                self.file = pd.read_excel(file_path)
-                self.file_name.setText(os.path.basename(file_path))
-
-            except:
-                self.file_name.setText("Ошибка при чтении файла")
-                self.file = None
-       
+        self.viewmodel.OpenFile(file_path)
+        
 
     def UploadDb(self):
-        if self.file is not None:
-            self.load.emit((self.file, self.list_tables.currentText()))
-            self.upload_button.setEnabled(False)
-            self.load_progress.setVisible(True)
-            self.load_progress.setRange(0, 0)
+        self.viewmodel.UploadDb(self.list_tables.currentText())
+        self.upload_button.setEnabled(False)
+        self.load_progress.setVisible(True)
+        self.load_progress.setRange(0, 0)
+
 
     def GoToScreen1(self):
         self.escape.emit()
 
 
     def DoReport(self):
-        emit_dict = {
-            "date_from": self.date_from.date().toString("yyyy-MM-dd"),
-            "date_to": self.date_to.date().toString("yyyy-MM-dd"),
-            "user_table": self.list_bank_propucts.currentText(),
-            "type_report": self.list_report_type.currentText(),
-        }
-
-        self.do_report.emit(emit_dict)
+        self.viewmodel.DoReport(self.date_from.date().toString("yyyy-MM-dd"), self.date_to.date().toString("yyyy-MM-dd"), self.list_bank_propucts.currentText(), self.list_report_type.currentText())
         self.do_report_button.setEnabled(False)
         self.form_progress.setVisible(True)
         self.form_progress.setRange(0, 0)
+
+
+    def LoadError(self, messege):
+        self.upload_button.setEnabled(True)
+        self.load_progress.setVisible(False)
+        QMessageBox.critical(self, "Ошибка" ,f"{messege}")
+
+
+    def LoadInfo(self):
+        self.upload_button.setEnabled(True)
+        self.load_progress.setVisible(False)
+        QMessageBox.information(self, "Успех" ,"Вставка прошла успешно")
+
+
+    def ReportError(self, messege):
+        QMessageBox.critical(self, "Ошибка" ,f"{messege}")
+        self.do_report_button.setEnabled(True)
+        self.form_progress.setVisible(False)
+
+
+    def ReportSuccess(self, report):
+        file_path, _ = QFileDialog.getSaveFileName(caption="Сохранить файл", directory="", filter=".docx")
+        if file_path:
+            _, extension = os.path.splitext(file_path)
+            if extension != '.docx':
+                shutil.copy(report, file_path + '.docx')           
+                QMessageBox.information(self, "Успех", "Отчёт сохранён")
+            else:
+                shutil.copy(report, file_path)
+                QMessageBox.information(self, "Успех", "Отчёт сохранён")
+        self.do_report_button.setEnabled(True)
+        self.form_progress.setVisible(False)
+        os.remove(report)  
