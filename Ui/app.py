@@ -2,8 +2,8 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QStackedWidget, QMessageBox
 from Ui.ConnectWindow import ConnectionScreen
 from Ui.OperationWindow import OperationScreen
-from viewmodel.ConnectionViewModel import ConnectionViewModel
-from viewmodel.OperationViewModel import OperationViewModel
+from Viewmodel.ConnectionViewModel import ConnectionViewModel
+from Viewmodel.OperationViewModel import OperationViewModel
 import os
 
 

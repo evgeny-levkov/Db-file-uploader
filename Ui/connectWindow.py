@@ -1,7 +1,7 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QGridLayout, QSizePolicy
 from PyQt6.QtGui import QIcon
-from viewmodel.ConnectionViewModel import ConnectionViewModel
+from Viewmodel.ConnectionViewModel import ConnectionViewModel
 
 
 

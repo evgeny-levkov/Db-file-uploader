@@ -13,6 +13,7 @@ class OperationViewModel(QObject):
     load = pyqtSignal(tuple)
     do_report = pyqtSignal(dict)
     file_name = pyqtSignal(str)
+    file_error = pyqtSignal(bool)
     load_error = pyqtSignal(str)
     load_info = pyqtSignal(str)
     report_success = pyqtSignal(str)
@@ -26,6 +27,7 @@ class OperationViewModel(QObject):
         self.load_thread = None
         self.create_report_worker = None
         self.report_thread = None
+        self.file = None
 
 
     def OpenFile(self, file_path):
@@ -43,6 +45,9 @@ class OperationViewModel(QObject):
     def UploadDb(self, list_tables):
         if self.file is not None:
             self.HandleLoad(list_tables)
+
+        else:
+            self.file_error.emit(True)
 
 
     def HandleLoad(self, data):
@@ -67,7 +72,7 @@ class OperationViewModel(QObject):
             self.load_info.emit("Вставка прошла успешно")
 
         else:
-            self.load_info.emit("Ошибка при вставке")
+            self.load_error.emit("Ошибка при вставке")
 
         self.load_thread.quit()
         self.data_load_worker.deleteLater()
@@ -89,7 +94,7 @@ class OperationViewModel(QObject):
 
     def FormReport(self, data):
 
-        if self.create_report_worker is None:
+        if self.create_report_worker is None and data is not None:
             self.report_thread = QThread()
             self.create_report_worker = CreateReportWorker(self.service, data)
             self.create_report_worker.moveToThread(self.report_thread)

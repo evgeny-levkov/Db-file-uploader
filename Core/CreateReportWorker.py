@@ -5,7 +5,7 @@ from PyQt6.QtCore import pyqtSignal, QObject
 
 class CreateReportWorker(QObject):
 
-    finished = pyqtSignal(str)
+    finished = pyqtSignal(object)
 
     def __init__(self, db_service : DbService, data):
         super().__init__()

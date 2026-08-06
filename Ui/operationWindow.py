@@ -1,7 +1,8 @@
 from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel, QHBoxLayout, QStackedWidget, QComboBox, QFileDialog, QGridLayout, QDateEdit, QProgressBar, QMessageBox
+from PyQt6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QHBoxLayout, QStackedWidget, QComboBox, 
+                             QFileDialog, QGridLayout, QDateEdit, QProgressBar, QMessageBox)
 from PyQt6.QtCore import QDate
-from viewmodel.OperationViewModel import OperationViewModel
+from Viewmodel.OperationViewModel import OperationViewModel
 import os
 import shutil
 
@@ -30,6 +31,7 @@ class OperationScreen(QWidget):
         self.viewmodel.load_error.connect(self.LoadError)
         self.viewmodel.load_info.connect(self.LoadInfo)
         self.viewmodel.report_error.connect(self.ReportError)
+        self.viewmodel.file_error.connect(self.FileError)
         self.viewmodel.report_success.connect(self.ReportSuccess)
 
 
@@ -264,6 +266,12 @@ class OperationScreen(QWidget):
         QMessageBox.critical(self, "Ошибка" ,f"{messege}")
 
 
+    def FileError(self):
+        self.upload_button.setEnabled(True)
+        self.load_progress.setVisible(False)
+        QMessageBox.critical(self, "Ошибка" ,"Файл не выбран")
+
+
     def LoadInfo(self):
         self.upload_button.setEnabled(True)
         self.load_progress.setVisible(False)
@@ -274,7 +282,7 @@ class OperationScreen(QWidget):
         QMessageBox.critical(self, "Ошибка" ,f"{messege}")
         self.do_report_button.setEnabled(True)
         self.form_progress.setVisible(False)
-
+            
 
     def ReportSuccess(self, report):
         file_path, _ = QFileDialog.getSaveFileName(caption="Сохранить файл", directory="", filter=".docx")
