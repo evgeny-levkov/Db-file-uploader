@@ -1,21 +1,18 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QGridLayout, QSizePolicy
+from PyQt6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QHBoxLayout,
+                             QLabel, QLineEdit, QGridLayout, QSizePolicy)
 from PyQt6.QtGui import QIcon
 from Viewmodel.ConnectionViewModel import ConnectionViewModel
 
 
-
 class ConnectionScreen(QWidget):
-
     def __init__(self, viewmodel):
         super().__init__()
-        self.viewmodel : ConnectionViewModel = viewmodel
-        self.InitlUi()
+        self.viewmodel: ConnectionViewModel = viewmodel
+        self.init_ui()
 
-
-    def InitlUi(self):
-        
-        #Верхние надписи
+    def init_ui(self):
+        # Верхние надписи
         mainLayout = QVBoxLayout()
         upperLayout = QHBoxLayout()
 
@@ -35,7 +32,7 @@ class ConnectionScreen(QWidget):
 
         mainLayout.addLayout(upperLayout)
         mainLayout.addWidget(self.label3)
-        mainLayout.addSpacing(10) 
+        mainLayout.addSpacing(10)
 
         self.main_lower_box = QHBoxLayout()
         self.row = QGridLayout()
@@ -69,11 +66,11 @@ class ConnectionScreen(QWidget):
         self.field_password.setProperty("class", "QLineEdit")
         self.field_password.setEchoMode(QLineEdit.EchoMode.Password)
         self.action = self.field_password.addAction(self.close_eye, QLineEdit.ActionPosition.TrailingPosition)
-        self.action.triggered.connect(self.SetVisiblePassword)
+        self.action.triggered.connect(self.set_visible_password)
 
         self.connect_button = QPushButton("Проверить подключение")
         self.connect_button.setProperty("class", "QPushButton")
-        self.connect_button.clicked.connect(self.ConnectDb)
+        self.connect_button.clicked.connect(self.connect_db)
 
         self.row.addWidget(self.host, 0, 0)
         self.row.addWidget(self.field_host, 1, 0)
@@ -88,7 +85,7 @@ class ConnectionScreen(QWidget):
         self.row.addWidget(self.field_user, 3, 1)
 
         self.row.addWidget(self.password, 4, 0)
-        self.row.addWidget(self.field_password, 5, 0)    
+        self.row.addWidget(self.field_password, 5, 0)
 
         btn_container = QWidget()
         btn_layout = QHBoxLayout(btn_container)
@@ -96,7 +93,7 @@ class ConnectionScreen(QWidget):
         self.connect_button.setSizePolicy(
         QSizePolicy.Policy.Expanding,
         QSizePolicy.Policy.Fixed)
-        
+
         self.connect_button.setMinimumWidth(500)
 
         btn_layout.addStretch()
@@ -104,22 +101,26 @@ class ConnectionScreen(QWidget):
         btn_layout.addStretch()
 
         self.row.addWidget(btn_container, 6, 0, 2, 3)
-        
-        self.main_lower_box.addLayout(self.row) 
+
+        self.main_lower_box.addLayout(self.row)
 
         mainLayout.addLayout(self.main_lower_box)
         mainLayout.addStretch()
         self.setLayout(mainLayout)
-        
 
-    def ConnectDb(self):
-        self.viewmodel.ConnectDb(self.field_user.text(), self.field_password.text(), self.field_host.text(), self.field_port.text(), self.field_name_db.text())
+    def connect_db(self):
+        self.viewmodel.connect_db(
+            self.field_user.text(),
+            self.field_password.text(),
+            self.field_host.text(),
+            self.field_port.text(),
+            self.field_name_db.text()
+        )
 
-
-    def SetVisiblePassword(self):
+    def set_visible_password(self):
         if self.field_password.echoMode() == QLineEdit.EchoMode.Password:
             self.field_password.setEchoMode(QLineEdit.EchoMode.Normal)
             self.action.setIcon(self.open_eye)
         else:
             self.field_password.setEchoMode(QLineEdit.EchoMode.Password)
-            self.action.setIcon(self.close_eye) 
+            self.action.setIcon(self.close_eye)

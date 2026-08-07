@@ -7,9 +7,7 @@ from Viewmodel.OperationViewModel import OperationViewModel
 import os
 
 
-
 class MainWindow(QWidget):
-
     def __init__(self):
         super().__init__()
         self.stacked_widget = QStackedWidget()
@@ -17,20 +15,16 @@ class MainWindow(QWidget):
         self.connectionScreen = ConnectionScreen(self.connectionviewmodel)
         self.operationviewmodel = OperationViewModel()
         self.operationScreen = OperationScreen(self.operationviewmodel)
-
         self.stacked_widget.addWidget(self.connectionScreen)
         self.stacked_widget.addWidget(self.operationScreen)
+        self.connectionviewmodel.success.connect(self.handle_success)
+        self.operationScreen.escape.connect(self.handle_escape)
+        self.initialize_ui()
 
-        self.connectionviewmodel.success.connect(self.HandleSuccess)
-        self.operationScreen.escape.connect(self.HandleEscape)        
-
-        self.InitializeUI() 
-
-
-    def InitializeUI(self):
+    def initialize_ui(self):
         self.setGeometry(300, 200, 1200, 1000)
         self.setWindowTitle("App")
-        
+
         # настройка окна
         self.setAutoFillBackground(True)
         palette = self.palette()
@@ -44,30 +38,24 @@ class MainWindow(QWidget):
 
         self.show()
 
-
-    def HandleSuccess(self, sucess):
-        if sucess == "Ошибка подключения к БД":
+    def handle_success(self, success):
+        if success == "Ошибка подключения к БД":
             QMessageBox.critical(self, "Ошибка", "Ошибка подключения к БД")
-
-        elif sucess == "Критическая ошибка":
+        elif success == "Критическая ошибка":
             QMessageBox.critical(self, "Ошибка", "Критическая ошибка")
-
-        elif sucess == None:
+        elif success is None:
             QMessageBox.critical(self, "Ошибка", "Ошибка подключения к БД")
-
         else:
             self.operationScreen.upload_button.setEnabled(True)
             self.operationScreen.load_progress.setVisible(False)
-            self.operationviewmodel.service = sucess
+            self.operationviewmodel.service = success
             self.stacked_widget.setCurrentIndex(1)
 
-
-    def HandleEscape(self):
+    def handle_escape(self):
         self.stacked_widget.setCurrentIndex(0)
 
-
     @staticmethod
-    def LoadStylesheet(path):
+    def load_stylesheet(path):
         """Загрузка CSS из файла"""
         if os.path.exists(path):
             with open(path, "r", encoding="utf-8") as file:

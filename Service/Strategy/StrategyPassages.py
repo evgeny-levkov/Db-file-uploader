@@ -6,8 +6,7 @@ class StrategyPassages(BaseStrategy):
     def __init__(self, table):
         super().__init__(table)
 
-
-    def Transformation(self):
+    def transformation(self):
         self.excel_table['Дата и время транзакции'] = pd.to_datetime(self.excel_table['Дата и время транзакции'])
         self.excel_table['datetime_minus_4'] = self.excel_table['Дата и время транзакции'] - pd.Timedelta(hours=4)
         self.excel_table['hour_new'] = self.excel_table['datetime_minus_4'].dt.hour

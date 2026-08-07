@@ -7,13 +7,12 @@ from .StrategyReestry import StrategyReestry
 from .StrategySessii import StrategySessii
 
 
-class DataTransform():
+class DataTransform:
     def __init__(self, table, db_table):
         self.excel_table = table
         self.db_table = db_table
 
-    def Transform(self):
-
+    def transform(self):
         STRATEGIES = {
             "sessii_prodaj_vt": StrategySessii,
             "sessii_prodaj_maas": StrategySessii,
@@ -29,12 +28,13 @@ class DataTransform():
             try:
                 strategy = STRATEGIES.get(self.db_table, StrategyPassages)
                 class_strategy: BaseStrategy = strategy(self.excel_table)
-                self.excel_table = class_strategy.Transformation()
+                self.excel_table = class_strategy.transformation()
 
             except Exception as e:
-                    print(f'Невозможно преобразовать исходные данные, ошибка:{e}')
-                    traceback.print_exc()
-                    return False
-            
-            self.excel_table = self.excel_table.rename(columns = self.db_column)
+                print(f'Невозможно преобразовать исходные данные, ошибка: {e}')
+                traceback.print_exc()
+                return False
+
+            self.excel_table = self.excel_table.rename(columns=self.db_column)
+
         return self.excel_table

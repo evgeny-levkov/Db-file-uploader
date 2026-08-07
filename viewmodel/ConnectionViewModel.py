@@ -4,22 +4,18 @@ from DAO.Db.DbConnect import DbConnect
 from Service.DbService import DbService
 
 
-
 class ConnectionViewModel(QObject):
-
     success = pyqtSignal(object)
 
     def __init__(self):
         super().__init__()
-        
 
-
-    def ConnectDb(self, user, password, host, port, name_db):
+    def connect_db(self, user, password, host, port, name_db):
         if not user or not password or not host or not port or not name_db:
             self.success.emit(None)
             return
-        
-        config ={
+
+        config = {
             "user": user,
             "password": password,
             "host": host,
@@ -32,9 +28,9 @@ class ConnectionViewModel(QObject):
             self.db_engine = DbEngine(config)
             self.db_connection = DbConnect(self.db_engine)
             self.service = DbService(self.db_connection)
-            if self.service.TestConnection():
+            if self.service.test_connection():
                 self.success.emit(self.service)
             else:
                 self.success.emit("Ошибка подключения к БД")
-        except:
-            self.success.emit("Критическая ошибка")
+        except Exception as e:
+            self.success.emit(f"Критическая ошибка {e}")

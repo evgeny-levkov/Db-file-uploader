@@ -1,4 +1,4 @@
-class ReportFactory():
+class ReportFactory:
 
     registry = {}
 
@@ -8,7 +8,6 @@ class ReportFactory():
             cls.registry[name] = func
             return func
         return decorator
-    
 
     @staticmethod
     def create_object(name, db, data_dict):

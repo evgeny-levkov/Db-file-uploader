@@ -4,16 +4,15 @@ from Ui.App import MainWindow
 from PyQt6.QtWidgets import QApplication
 
 
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    stylesheet = MainWindow.LoadStylesheet("style.css")
-    
+    stylesheet = MainWindow.load_stylesheet("style.css")
+
     if stylesheet:
         app.setStyleSheet(stylesheet)
         print("✅")
     else:
         print("⚠️")
-    
+
     window = MainWindow()
     sys.exit(app.exec())

@@ -1,5 +1,5 @@
 from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QHBoxLayout, QStackedWidget, QComboBox, 
+from PyQt6.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QHBoxLayout, QStackedWidget, QComboBox,
                              QFileDialog, QGridLayout, QDateEdit, QProgressBar, QMessageBox)
 from PyQt6.QtCore import QDate
 from Viewmodel.OperationViewModel import OperationViewModel
@@ -9,7 +9,6 @@ import shutil
 
 
 class OperationScreen(QWidget):
-
     escape = pyqtSignal()
     load = pyqtSignal(tuple)
     do_report = pyqtSignal(dict)
@@ -25,31 +24,32 @@ class OperationScreen(QWidget):
         self.stacked_widget.addWidget(self.load_data)
         self.stacked_widget.addWidget(self.form_report)
 
-        self.InitlUi()
+        self.init_ui()
 
         self.viewmodel.file_name.connect(self.file_name.setText)
-        self.viewmodel.load_error.connect(self.LoadError)
-        self.viewmodel.load_info.connect(self.LoadInfo)
-        self.viewmodel.report_error.connect(self.ReportError)
-        self.viewmodel.file_error.connect(self.FileError)
-        self.viewmodel.report_success.connect(self.ReportSuccess)
+        self.viewmodel.load_error.connect(self.load_error)
+        self.viewmodel.load_info.connect(self.load_info)
+        self.viewmodel.report_error.connect(self.report_error)
+        self.viewmodel.file_error.connect(self.file_error)
+        self.viewmodel.report_success.connect(self.report_success)
 
-
-    def InitlUi(self):
+    def init_ui(self):
         self.main_loyuot = QVBoxLayout()
         self.button_loyout = QHBoxLayout()
 
-        self.load_data_button = QPushButton("Загрузка файлов операций\nЗагрузка XLSX-файлов, ETL-валидация, запись в БД")
+        self.load_data_button = QPushButton(
+            "Загрузка файлов операций\nЗагрузка XLSX-файлов, ETL-валидация, запись в БД"
+        )
         self.load_data_button.setProperty("class", "upload")
         self.form_report_button = QPushButton("Сформировать отчёт\nАналитика, прогнозы, экспорты PDF, CSV, PNG")
         self.form_report_button.setProperty("class", "upload")
-        self.load_data_button.clicked.connect(self.ShowLoadData)
-        self.form_report_button.clicked.connect(self.ShowFormReport)
+        self.load_data_button.clicked.connect(self.show_load_data)
+        self.form_report_button.clicked.connect(self.show_form_report)
         self.load_data_button.setCheckable(True)
         self.form_report_button.setCheckable(True)
         self.button_loyout.addWidget(self.load_data_button)
         self.button_loyout.addWidget(self.form_report_button)
-        
+
         #Загрузка файлов и операций
         self.load_data_loyuot = QVBoxLayout()
         self.form_report_loyout = QVBoxLayout()
@@ -86,10 +86,10 @@ class OperationScreen(QWidget):
         self.label4.setProperty("class", "label7")
 
         self.open_file_button = QPushButton("Выбрать файл")
-        self.open_file_button.clicked.connect(self.OpenFile)
+        self.open_file_button.clicked.connect(self.open_file)
 
         self.upload_button = QPushButton("Загрузить")
-        self.upload_button.clicked.connect(self.UploadDb)
+        self.upload_button.clicked.connect(self.upload_db)
         self.load_progress = QProgressBar(self)
         self.load_progress.setVisible(False)
 
@@ -105,7 +105,7 @@ class OperationScreen(QWidget):
         self.null_widget.setMinimumHeight(10)
         self.open_file_loyuot.addWidget(self.null_widget, 1, 0)
         self.open_file_loyuot.setRowStretch(1, 10)
-        
+
         self.upload_button_louout = QHBoxLayout()
         self.null_coll0 = QLabel()
         self.null_coll2 = QLabel()
@@ -117,12 +117,12 @@ class OperationScreen(QWidget):
 
         self.load_data_loyuot.addWidget(self.label1)
         self.load_data_loyuot.addWidget(self.label2)
-        self.load_data_loyuot.addWidget(self.label3) 
+        self.load_data_loyuot.addWidget(self.label3)
         self.load_data_loyuot.addWidget(self.list_tables)
         self.load_data_loyuot.addWidget(self.label4)
         self.load_data_loyuot.addLayout(self.open_file_loyuot)
         self.load_data_loyuot.addWidget(self.load_progress)
-        
+
         self.load_data_loyuot.addStretch(0)
 
 
@@ -146,7 +146,7 @@ class OperationScreen(QWidget):
         self.date_from = QDateEdit(QDate.currentDate())
         self.date_from.setCalendarPopup(True)
         self.date_from.setProperty("class", "QDateEdit")
-                
+
         self.label8 = QLabel("Период по")
         self.label8.setProperty("class", "label7")
 
@@ -170,7 +170,7 @@ class OperationScreen(QWidget):
         self.list_report_type.addItem("Продажи")
 
         self.do_report_button = QPushButton("Сформировать отчёт")
-        self.do_report_button.clicked.connect(self.DoReport)
+        self.do_report_button.clicked.connect(self.do_report)
         self.form_progress = QProgressBar(self)
         self.form_progress.setVisible(False)
 
@@ -198,9 +198,9 @@ class OperationScreen(QWidget):
         self.null_widget_1.setMinimumHeight(10)
 
         self.do_report_loyout.addWidget(self.do_report_button, 2)
-        self.do_report_loyout.addWidget(self.null_coll4, 3)  
-        self.do_report_loyout.addWidget(self.null_coll_6, 3)    
-        
+        self.do_report_loyout.addWidget(self.null_coll4, 3)
+        self.do_report_loyout.addWidget(self.null_coll_6, 3)
+
         self.form_report_grid.addWidget(self.null_widget_1, 6, 0)
         self.form_report_grid.addLayout(self.do_report_loyout, 6, 0, 1, 2)
 
@@ -216,7 +216,7 @@ class OperationScreen(QWidget):
 
 
         self.esc_button = QPushButton("Назад")
-        self.esc_button.clicked.connect(self.GoToScreen1)
+        self.esc_button.clicked.connect(self.go_to_screen1)
 
         self.main_loyuot.addLayout(self.button_loyout)
         self.main_loyuot.addWidget(self.stacked_widget)
@@ -224,76 +224,70 @@ class OperationScreen(QWidget):
         self.main_loyuot.addWidget(self.esc_button)
         self.setLayout(self.main_loyuot)
 
-        
-    def ShowLoadData(self):
+    def show_load_data(self):
         self.stacked_widget.setCurrentIndex(0)
         self.load_data_button.setChecked(True)
         self.form_report_button.setChecked(False)
 
-
-    def ShowFormReport(self):
+    def show_form_report(self):
         self.stacked_widget.setCurrentIndex(1)
         self.load_data_button.setChecked(False)
         self.form_report_button.setChecked(True)
 
-
-    def OpenFile(self):
+    def open_file(self):
         file_path, _ = QFileDialog.getOpenFileName(self, "Выберите XLSX файл", "", "Excel (*.xlsx)")
-        self.viewmodel.OpenFile(file_path)
-        
+        self.viewmodel.open_file(file_path)
 
-    def UploadDb(self):
-        self.viewmodel.UploadDb(self.list_tables.currentText())
+    def upload_db(self):
+        self.viewmodel.upload_db(self.list_tables.currentText())
         self.upload_button.setEnabled(False)
         self.load_progress.setVisible(True)
         self.load_progress.setRange(0, 0)
 
-
-    def GoToScreen1(self):
+    def go_to_screen1(self):
         self.escape.emit()
 
-
-    def DoReport(self):
-        self.viewmodel.DoReport(self.date_from.date().toString("yyyy-MM-dd"), self.date_to.date().toString("yyyy-MM-dd"), self.list_bank_propucts.currentText(), self.list_report_type.currentText())
+    def do_report(self):
+        self.viewmodel.do_report(
+            self.date_from.date().toString("yyyy-MM-dd"),
+            self.date_to.date().toString("yyyy-MM-dd"),
+            self.list_bank_propucts.currentText(),
+            self.list_report_type.currentText()
+        )
         self.do_report_button.setEnabled(False)
         self.form_progress.setVisible(True)
         self.form_progress.setRange(0, 0)
 
-
-    def LoadError(self, messege):
+    def load_error(self, messege):
         self.upload_button.setEnabled(True)
         self.load_progress.setVisible(False)
         QMessageBox.critical(self, "Ошибка" ,f"{messege}")
 
-
-    def FileError(self):
+    def file_error(self):
         self.upload_button.setEnabled(True)
         self.load_progress.setVisible(False)
         QMessageBox.critical(self, "Ошибка" ,"Файл не выбран")
 
-
-    def LoadInfo(self):
+    def load_info(self):
         self.upload_button.setEnabled(True)
         self.load_progress.setVisible(False)
         QMessageBox.information(self, "Успех" ,"Вставка прошла успешно")
 
-
-    def ReportError(self, messege):
+    def report_error(self, messege):
         QMessageBox.critical(self, "Ошибка" ,f"{messege}")
         self.do_report_button.setEnabled(True)
         self.form_progress.setVisible(False)
-            
 
-    def ReportSuccess(self, report):
+    def report_success(self, report):
         file_path, _ = QFileDialog.getSaveFileName(caption="Сохранить файл", directory="", filter=".docx")
         if file_path:
             _, extension = os.path.splitext(file_path)
             if extension != '.docx':
-                shutil.copy(report, file_path + '.docx')           
+                shutil.copy(report, file_path + '.docx')
                 QMessageBox.information(self, "Успех", "Отчёт сохранён")
             else:
                 shutil.copy(report, file_path)
                 QMessageBox.information(self, "Успех", "Отчёт сохранён")
         self.do_report_button.setEnabled(True)
         self.form_progress.setVisible(False)
-        os.remove(report)  
+        os.remove(report)
