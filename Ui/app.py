@@ -4,6 +4,7 @@ from Ui.ConnectWindow import ConnectionScreen
 from Ui.OperationWindow import OperationScreen
 from Viewmodel.ConnectionViewModel import ConnectionViewModel
 from Viewmodel.OperationViewModel import OperationViewModel
+from settings import MAPPING, BASE_DIR
 import os
 
 
@@ -13,7 +14,7 @@ class MainWindow(QWidget):
         self.stacked_widget = QStackedWidget()
         self.connectionviewmodel = ConnectionViewModel()
         self.connectionScreen = ConnectionScreen(self.connectionviewmodel)
-        self.operationviewmodel = OperationViewModel()
+        self.operationviewmodel = OperationViewModel(MAPPING, None, BASE_DIR)
         self.operationScreen = OperationScreen(self.operationviewmodel)
         self.stacked_widget.addWidget(self.connectionScreen)
         self.stacked_widget.addWidget(self.operationScreen)

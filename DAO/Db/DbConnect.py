@@ -1,14 +1,14 @@
 import sqlalchemy
 from sqlalchemy import text
 import pandas as pd
+from .BaseDbConnect import BaseDbConnect
 from DAO.Db.DbEngine import DbEngine
-from settings import MAPPING
 import traceback
 
 
-class DbConnect:
+class DbConnect(BaseDbConnect):
     def __init__(self, db_engine: DbEngine):
-        self.db_engine = db_engine
+        super().__init__(db_engine)
 
     def test_connection(self):
         try:

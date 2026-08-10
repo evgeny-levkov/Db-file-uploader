@@ -1,5 +1,4 @@
 import pandas as pd
-from settings import MAPPING
 import traceback
 from .BaseStrategy import BaseStrategy
 from .StrategyPassages import StrategyPassages
@@ -8,9 +7,10 @@ from .StrategySessii import StrategySessii
 
 
 class DataTransform:
-    def __init__(self, table, db_table):
+    def __init__(self, table, db_table, column_mapping):
         self.excel_table = table
         self.db_table = db_table
+        self.column_mapping = column_mapping
 
     def transform(self):
         STRATEGIES = {
@@ -21,7 +21,7 @@ class DataTransform:
         }
 
         if isinstance(self.excel_table, pd.DataFrame):
-            self.db_column = MAPPING[self.db_table]
+            self.db_column = self.column_mapping
             if len(self.db_column) == 0:
                 print('Таблица не найдена')
                 return False

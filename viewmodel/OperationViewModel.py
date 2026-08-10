@@ -18,9 +18,12 @@ class OperationViewModel(QObject):
     report_error = pyqtSignal(str)
     report = pyqtSignal()
 
-    def __init__(self, service=None):
+    def __init__(self, mapping, service=None, base_dir=None):
         super().__init__()
+        self.mapping = mapping
+        self.rep_type = self.mapping['report_type']
         self.service: DbService | None = service
+        self.base_dir = base_dir
         self.data_load_worker = None
         self.load_thread = None
         self.create_report_worker = None
@@ -45,7 +48,7 @@ class OperationViewModel(QObject):
     def handle_load(self, data):
         if self.data_load_worker is None:
             self.load_thread = QThread()
-            self.data_load_worker = DataLoadWorker(self.file, data, self.service)
+            self.data_load_worker = DataLoadWorker(self.file, data, self.mapping[data], self.service)
             self.data_load_worker.moveToThread(self.load_thread)
             try:
                 self.load_thread.started.connect(self.data_load_worker.do_work)
@@ -73,14 +76,17 @@ class OperationViewModel(QObject):
             "date_to": date_to,
             "user_table": list_bank_propucts,
             "type_report": list_report_type,
+            "base_dir": self.base_dir,
+            "mapping": self.mapping
         }
 
         self.form_report(emit_dict)
 
-    def form_report(self, data):
-        if self.create_report_worker is None and data is not None:
+    def form_report(self, emit_dict):
+        if self.create_report_worker is None:
             self.report_thread = QThread()
-            self.create_report_worker = CreateReportWorker(self.service, data)
+            emit_dict['type_report'] = self.rep_type[emit_dict['type_report']]
+            self.create_report_worker = CreateReportWorker(self.service, emit_dict)
             self.create_report_worker.moveToThread(self.report_thread)
             try:
                 self.report_thread.started.connect(self.create_report_worker.do_work)

@@ -1,7 +1,6 @@
 from docxtpl import DocxTemplate
 from datetime import date
 from tempfile import NamedTemporaryFile
-from settings import BASE_DIR, MAPPING
 from .ReportFactory import ReportFactory
 from .BaseReport import BaseReport
 
@@ -32,7 +31,7 @@ class CreateReconciliationPassagersReport(BaseReport):
         if num_from_db is None or num_from_db is False:
             return False
 
-        full_report_path = BASE_DIR / MAPPING['file_path']['path_report_1']
+        full_report_path = self.base_dir / self.mapping['file_path']['path_report_1']
 
         try:
             doc = DocxTemplate(full_report_path)
